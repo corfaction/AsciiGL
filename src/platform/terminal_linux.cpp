@@ -26,7 +26,7 @@ public:
         output += 'H';
         output += c;
             
-        std::cout << output;
+        std::cout << "\033[" + std::to_string(y + 1) + ';' + std::to_string(x + 1) + 'H' + c;
     }
 
     void flushBuffer() {
