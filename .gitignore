@@ -1,3 +1,2 @@
 /build
-/examples
-*.commit.txt
+*commit.txt
