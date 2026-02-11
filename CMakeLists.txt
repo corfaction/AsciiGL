@@ -4,7 +4,7 @@ project(AskiiGL)
 set(CMAKE_CXX_STANDARD 20)
 
 if(WIN32)
-    add_executable(console3D
+    add_executable(AsciiGL
         examples/cube.cpp
         src/core/screen_buffer.cpp
         src/core/terminal.cpp
@@ -12,7 +12,7 @@ if(WIN32)
     )
 
 else()
-    add_executable(console3D
+    add_executable(AsciiGL
         examples/cube.cpp
         src/core/screen_buffer.cpp
         src/core/terminal.cpp
