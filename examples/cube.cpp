@@ -16,9 +16,6 @@ int main() {
         buffer[i] = 'B';
     }
 
-    mat4 m;
-    vec4 v;
- 
     while(true) {
         screen_buffer.clear();
         screen_buffer.drawBuffer(buffer);
