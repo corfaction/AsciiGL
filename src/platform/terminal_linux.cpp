@@ -2,6 +2,8 @@
 #include <sys/ioctl.h>
 #include <unistd.h>
 
+using namespace AsciiGL;
+
 class Terminal::Impl {
 public:
     void getWindowSize(size_t& width, size_t& height) const {

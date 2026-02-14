@@ -1,6 +1,8 @@
 #include "../../include/core/terminal.hpp"
 #include <windows.h>
 
+using namespace AsciiGL;
+
 class Terminal::Impl {
 private:
     HANDLE hConsole;

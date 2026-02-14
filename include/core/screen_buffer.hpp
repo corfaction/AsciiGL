@@ -2,7 +2,7 @@
 #include <iostream>
 #include "terminal.hpp"
 
-namespace console3D {
+namespace AsciiGL {
 
 class ScreenBuffer {
 private:

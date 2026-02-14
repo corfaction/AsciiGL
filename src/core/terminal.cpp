@@ -22,6 +22,8 @@ Terminal::Terminal() : pImpl(nullptr) {
     #endif
 }
 
+using namespace AsciiGL;
+
 void Terminal::getWindowSize(size_t& width, size_t& height) const {
     pImpl->getWindowSize(width, height);
 }

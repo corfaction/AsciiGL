@@ -1,6 +1,8 @@
 #pragma once 
 #include <iostream>
 
+namespace AsciiGL {
+
 class Terminal {
 public:
     Terminal();
@@ -17,3 +19,5 @@ private:
     class Impl;
     Impl* pImpl;
 };
+
+}

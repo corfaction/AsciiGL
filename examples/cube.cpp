@@ -1,13 +1,12 @@
-#include "../include/core/screen_buffer.hpp"
-#include "../include/core/terminal.hpp"
-#include "../include/math/vec.hpp"
-#include "../include/math/mat.hpp"
+#include "../include/AsciiGL.hpp"
+
+using namespace AsciiGL;
 
 int main() {
 
     size_t width, height;
     Terminal terminal;
-    console3D::ScreenBuffer screen_buffer(terminal);
+    ScreenBuffer screen_buffer(terminal);
 
     terminal.getWindowSize(width, height);
 
@@ -16,6 +15,9 @@ int main() {
     for(int i = 0; i < width * height; i++) {
         buffer[i] = 'B';
     }
+
+    mat4 m;
+    vec4 v;
  
     while(true) {
         screen_buffer.clear();

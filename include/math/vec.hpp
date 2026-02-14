@@ -1,6 +1,6 @@
 #pragma once
 
-namespace console3d {
+namespace AsciiGL {
 
 struct vec2 {
     float x, y;

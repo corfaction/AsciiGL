@@ -1,7 +1,7 @@
 #include "vec.hpp"
 #include <stdexcept>
 
-namespace console3d {
+namespace AsciiGL {
     struct mat4 {
         vec4 m[4];
 
