@@ -1,5 +1,6 @@
 #pragma once
 #include "../math/vec.hpp"
+#include "../math/color.hpp"
 
 namespace AsciiGL {
     struct Vertex {
@@ -8,8 +9,8 @@ namespace AsciiGL {
     };
 
     struct Fragment {
-        int screen_x;
-        int screen_y;
-        vec4 color;
+        ivec2 screen_pos;
+        vec4 vertex_color;
+        Color color;
     };
 }

@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include "graphics_types.hpp"
+#include <cmath>
 
 namespace AsciiGL {
 
@@ -11,91 +12,56 @@ public:
 
     Rasterizer(float w, float h) : width(w), height(h) {}
 
-    std::vector<Fragment> drawTriangle(std::vector<Vertex>& vertices) {
-        if(vertices.size() != 3) throw std::out_of_range("vertices size != 3");
-
-        float stepX = 2.0f / width;
-        float stepY = 2.0f / height;
-        
-        //for A vertex
-        float& x1 = vertices[0].pos.x;
-        float& y1 = vertices[0].pos.y;
-
-        //for B vertex
-        float& x2 = vertices[1].pos.x;
-        float& y2 = vertices[1].pos.y;
-
-        //for C vertex
-        float& x3 = vertices[2].pos.x;
-        float& y3 = vertices[2].pos.y;
-
-        // edge projection
-        float AB_x = x2 - x1;
-        float AB_y = y2 - y1;
-        float BC_x = x3 - x2;
-        float BC_y = y3 - y2;
-        float CA_x = x1 - x3;
-        float CA_y = y1 - y3;
-
-        // Increments for edges
-        float i_E1_x =  AB_y;
-        float i_E1_y = -AB_x;
-        float i_E2_x =  BC_y;
-        float i_E2_y = -BC_x;
-        float i_E3_x =  CA_y;
-        float i_E3_y = -CA_x;
-
-        // BoundingBox
-        float minX = std::min(x1, std::min(x2, x3));
-        float maxX = std::max(x1, std::max(x2, x3));
-        float minY = std::min(y1, std::min(y2, y3));
-        float maxY = std::max(y1, std::max(y2, y3));
-
-        float S_ABC = AB_x * (y3 - y1) - (x3 - x1) * AB_y;
-        if (S_ABC == 0) return {};
+    std::vector<Fragment> makeTriangle(std::vector<Vertex>& v)
+    {
+        if (v.size() != 3)
+            throw std::out_of_range("vertices size != 3");
 
         std::vector<Fragment> fragments;
 
-        for(float y = maxY; y > minY; y -= stepY) {  
+        float stepX = 2.0f / (width * 3.0f);
+        float stepY = 2.0f / (height * 3.0f);
 
-            // edge Function
-            float E1 = (minX - x1) * AB_y - (y - y1) * AB_x;
-            float E2 = (minX - x2) * BC_y - (y - y2) * BC_x;
-            float E3 = (minX - x3) * CA_y - (y - y3) * CA_x;
+        float& x1 = v[0].pos.x; float& y1 = v[0].pos.y;
+        float& x2 = v[1].pos.x; float& y2 = v[1].pos.y;
+        float& x3 = v[2].pos.x; float& y3 = v[2].pos.y;
 
+        float area = (x2 - x1)*(y3 - y1) - (x3 - x1)*(y2 - y1);
+
+        float minX = std::min({x1, x2, x3});
+        float maxX = std::max({x1, x2, x3});
+        float minY = std::min({y1, y2, y3});
+        float maxY = std::max({y1, y2, y3});
+
+        for(float y = minY; y < maxY; y += stepY) {
             for(float x = minX; x < maxX; x += stepX) {
+                float E1 = (x - x1)*(y2 - y1) - (y - y1)*(x2 - x1);
+                float E2 = (x - x2)*(y3 - y2) - (y - y2)*(x3 - x2);
+                float E3 = (x - x3)*(y1 - y3) - (y - y3)*(x1 - x3);
 
-                if(E1 >= 0 && E2 >= 0 && E3 >= 0) {
-                    
-                    Fragment fragment;
+                if(E1 <= 0 && E2 <= 0 && E3 <= 0) {
+                    Fragment frag;
 
-                    fragment.screen_x = (1.0f + x) * width * 0.5f;
-                    fragment.screen_y = (1.0f - y) * height * 0.5f;
+                    frag.screen_pos.x = (1.0f + x) * width * 0.5f;
+                    frag.screen_pos.y = (1.0f - y) * height * 0.5f;
 
-                    // interpolation
-
-                    float w1 = E2 / S_ABC;
-                    float w2 = E3 / S_ABC;
+                    float w1 = ((x2 - x)*(y3 - y) - (x3 - x)*(y2 - y)) / area;
+                    float w2 = ((x3 - x)*(y1 - y) - (x1 - x)*(y3 - y)) / area;
                     float w3 = 1.0f - w1 - w2;
 
-                    fragment.color = vertices[0].color * w1 
-                        + vertices[1].color * w2 + vertices[2].color * w3;
+                    frag.vertex_color = 
+                        v[0].color * w1 +
+                        v[1].color * w2 +
+                        v[2].color * w3;
 
-                    fragments.push_back(fragment);
-                    
+                    fragments.push_back(frag);
                 }
-
-                E1 += i_E1_x;
-                E2 += i_E2_x;
-                E3 += i_E3_x;
             }
-            E1 += i_E1_y;
-            E2 += i_E2_y;
-            E3 += i_E3_y;
         }
+
+        
         return fragments;
     }
-
 };
 
 }

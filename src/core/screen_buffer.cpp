@@ -59,7 +59,7 @@ void ScreenBuffer::drawBuffer(char* input_buffer) {
     for(size_t i = 0; i < screen_size; ++i) {
             if(input_buffer[i] != ' ') 
                 back_buffer[i] = input_buffer[i];
-            }
+    }
 }
 
 ScreenBuffer::~ScreenBuffer() {

@@ -9,6 +9,7 @@ if(WIN32)
         src/core/screen_buffer.cpp
         src/core/terminal.cpp
         src/platform/terminal_windows.cpp
+        src/core/renderer.cpp
     )
 
 else()
@@ -17,6 +18,7 @@ else()
         src/core/screen_buffer.cpp
         src/core/terminal.cpp
         src/platform/terminal_linux.cpp
+        src/core/renderer.cpp
     )
 
 endif()

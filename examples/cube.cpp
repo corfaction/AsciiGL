@@ -10,15 +10,24 @@ int main() {
 
     terminal.getWindowSize(width, height);
 
-    char* buffer = new char[width * height];
+    //std::vector<std::vector<float>> triangle = {{-0.9f, -0.9f, 0.0f,   1.0f, 0.0f, 0.0f},
+    //                                            { 0.9f, -0.9f, 0.0f,   0.0f, 1.0f, 0.0f},
+    //                                            { 0.0f,  0.9f, 0.0f,   0.0f, 0.0f, 1.0f}};
     
-    for(int i = 0; i < width * height; i++) {
-        buffer[i] = 'B';
-    }
+    std::vector<std::vector<float>> square = {{-0.7f, -0.7f, 0.0f,   1.0f, 0.0f, 0.0f, 1.0f},
+                                              { 0.7f, -0.7f, 0.0f,   0.0f, 1.0f, 0.0f, 1.0f},
+                                              {-0.7f,  0.7f, 0.0f,   0.0f, 0.0f, 1.0f, 1.0f},
+                                                
+                                              {-0.7f,  0.7f, 0.0f,   0.0f, 0.0f, 1.0f, 1.0f},
+                                              { 0.7f, -0.7f, 0.0f,   0.0f, 1.0f, 0.0f, 1.0f},
+                                              { 0.7f,  0.7f, 0.0f,   1.0f, 0.0f, 0.0f, 1.0f}};
+
+    Renderer renderer(screen_buffer);
+
 
     while(true) {
         screen_buffer.clear();
-        screen_buffer.drawBuffer(buffer);
+        renderer.drawTriangles(square);
         screen_buffer.swap();
         screen_buffer.present();
     }

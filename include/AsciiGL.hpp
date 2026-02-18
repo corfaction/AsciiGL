@@ -6,3 +6,4 @@
 #include "core/terminal.hpp"
 #include "graphics/rasterizer.hpp"
 #include "graphics/graphics_types.hpp"
+#include "core/renderer.hpp"
