@@ -34,18 +34,4 @@ public:
         );
         return static_cast<float>(info.dwFontSize.Y) / static_cast<float>(info.dwFontSize.X);
     }
-
-    void setChar(size_t x, size_t y, char c) {
-        hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-        COORD coord;
-        coord.X = x;
-        coord.Y = y; 
-
-        std::cout << "\033[" + std::to_string(y + 1) + ';' + std::to_string(x + 1) + 'H' + c;
-    }
-
-    void flushBuffer() {
-        hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-        SetConsoleCursorPosition(hConsole, {0, 0});
-    }
 };

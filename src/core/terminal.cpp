@@ -24,20 +24,20 @@ Terminal::Terminal() : pImpl(nullptr) {
 
 using namespace AsciiGL;
 
+void Terminal::setChar(size_t x, size_t y, char c) { 
+    std::cout << "\033[" + std::to_string(y + 1) + ';' + std::to_string(x + 1) + 'H' + c;
+}
+
+void Terminal::resetCursor() {
+    std::cout << "\033[0;0H";
+}
+
 void Terminal::getWindowSize(size_t& width, size_t& height) const {
     pImpl->getWindowSize(width, height);
 }
 
 float Terminal::getAspectRatio() const {
     return pImpl->getAspectRatio();
-}
-
-void Terminal::setChar(size_t x, size_t y, char c) {
-    pImpl->setChar(x, y, c);
-}
-
-void Terminal::flushBuffer() {
-    pImpl->flushBuffer();
 }
 
 Terminal::~Terminal() {

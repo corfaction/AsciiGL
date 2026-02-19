@@ -11,7 +11,7 @@ public:
     float getAspectRatio() const;
 
     void setChar(size_t x, size_t y, char c);
-    void flushBuffer();
+    void resetCursor();
 
     ~Terminal();
 

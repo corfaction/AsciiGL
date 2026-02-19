@@ -52,7 +52,7 @@ void ScreenBuffer::present() {
             index++;
         }
     }
-    terminal.flushBuffer();
+    terminal.resetCursor();
 }
 
 void ScreenBuffer::drawBuffer(char* input_buffer) {
