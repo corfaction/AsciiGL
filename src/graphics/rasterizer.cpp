@@ -8,7 +8,7 @@ using namespace AsciiGL;
 std::vector<Fragment> Rasterizer::makeTriangle(std::vector<Vertex>& v) {
 
     if (v.size() != 3)
-        throw std::out_of_range("vertices size != 3");
+        throw std::length_error("vertices size != 3");
 
     std::vector<Fragment> fragments;
 

@@ -36,16 +36,11 @@ void Renderer::fragmentShaider(Fragment& fragment) {
     fragment.color.g = fragment.vertex_color.y;
     fragment.color.b = fragment.vertex_color.z;
     fragment.color.a = fragment.vertex_color.w;
-    /*std::cout << fragment.color.r << ", ";
-    std::cout << fragment.color.g << ", ";
-    std::cout << fragment.color.b << ", ";
-    std::cout << fragment.color.a << std::endl;*/
-
 }
 
 void Renderer::drawTriangles(std::vector<std::vector<float>>& data) {
     if(data.size() % 3 != 0) 
-        throw std::out_of_range("the triangle is missing vertices. data.size() % 3 != 0");
+        throw std::length_error("the triangle is missing vertices. data.size() % 3 != 0");
 
     for(size_t i = 0; i < data.size() / 3; ++i) {
 
@@ -55,11 +50,17 @@ void Renderer::drawTriangles(std::vector<std::vector<float>>& data) {
 
         std::vector<Vertex> vertices;
 
+        // Using a vertex shader
+
         for(size_t j = 0; j < 3; ++j) {
             vertices.push_back(vertexShaider(data[3 * i + j]));
         }
 
+        // Rasterization
+
         std::vector<Fragment> fragments = rasterizer.makeTriangle(vertices);
+
+        // Using a fragment shader
 
         for(size_t j = 0; j < fragments.size(); ++j) {
             Fragment& fragment = fragments[j];
