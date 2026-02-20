@@ -1,26 +1,26 @@
-#pragma once 
-#include <iostream>
+#pragma once
+#include <memory>
 
 namespace AsciiGL {
 
 class Terminal {
 public:
     Terminal();
+    ~Terminal();
     
-    void getWindowSize(size_t& w, size_t& h) const;
-    float getAspectRatio() const;
-
     void setChar(size_t x, size_t y, char c);
     void resetCursor();
-
-    ~Terminal();
-
+    void getWindowSize(size_t& w, size_t& h) const;
+    float getAspectRatio() const;
+    
 private:
-    size_t width, height;
-    int cursorX, cursorY;
-
     class Impl;
-    Impl* pImpl;
+    std::unique_ptr<Impl> pImpl;
+    
+    size_t width = 80;
+    size_t height = 25;
+    size_t cursorX = 0;
+    size_t cursorY = 0;
 };
 
 }
