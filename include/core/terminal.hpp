@@ -7,7 +7,7 @@ class Terminal {
 public:
     Terminal();
     
-    void getWindowSize(size_t& width, size_t& height) const;
+    void getWindowSize(size_t& w, size_t& h) const;
     float getAspectRatio() const;
 
     void setChar(size_t x, size_t y, char c);
@@ -16,6 +16,9 @@ public:
     ~Terminal();
 
 private:
+    size_t width, height;
+    int cursorX, cursorY;
+
     class Impl;
     Impl* pImpl;
 };
