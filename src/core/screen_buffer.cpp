@@ -1,6 +1,5 @@
 #include <iostream>
-#include <algorithm>
-#include <unistd.h>
+#include <utility>
 #include "../../include/core/screen_buffer.hpp"
 
 using namespace AsciiGL;

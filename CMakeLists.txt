@@ -13,7 +13,7 @@ add_executable(AsciiGL
     examples/cube.cpp
     src/core/screen_buffer.cpp
     src/core/terminal.cpp
-    src/platform/terminal_windows.cpp
     src/core/renderer.cpp
     src/graphics/rasterizer.cpp
+    ${PLATFORM_FILES}
 )

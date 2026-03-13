@@ -1,6 +1,6 @@
 #include "../../include/graphics/rasterizer.hpp"
 #include <algorithm>
-#include <cmath>
+#include <stdexcept>
 #include <vector>
 
 using namespace AsciiGL;

@@ -2,6 +2,7 @@
 #include "../../include/core/screen_buffer.hpp"
 #include "../../include/graphics/rasterizer.hpp"
 #include "../../include/graphics/graphics_types.hpp"
+#include <stdexcept>
 #include <vector>
 
 using namespace AsciiGL;

@@ -1,5 +1,4 @@
 #pragma once
-#include <iostream>
 #include "terminal.hpp"
 
 namespace AsciiGL {
