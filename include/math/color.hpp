@@ -14,6 +14,8 @@ namespace AsciiGL {
         Color(float red, float green, float blue, float alpha = 1.0f) 
             : r(red), g(green), b(blue), a(alpha) {}
 
+        Color(vec4 xyzw) : r(xyzw.x), g(xyzw.y), b(xyzw.z), a(xyzw.w) {}
+
         Color operator*(const Color& other) const {
             return Color(r * other.r, g * other.g, b * other.b, a * other.a);
         }

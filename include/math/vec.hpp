@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 
 namespace AsciiGL {
 
@@ -26,6 +27,11 @@ struct vec3 {
 
     vec3() : x(0.0f), y(0.0f), z(0.0f) {}
     vec3(float i_x, float i_y, float i_z) : x(i_x), y(i_y), z(i_z) {}
+    vec3(const std::vector<float>& xyz) {
+        if(xyz.size() > 2) {
+            x = xyz[0]; y = xyz[1]; z = xyz[2];   
+        }
+    }
 
     vec3 operator*(const vec3& a) const {
         return vec3(a.x * x, a.y * y, a.z * z);
@@ -45,6 +51,7 @@ struct vec4 {
 
     vec4() : x(0.0f), y(0.0f), z(0.0f), w(0.0f) {}
     vec4(float i_x, float i_y, float i_z, float i_w) : x(i_x), y(i_y), z(i_z), w(i_w) {}
+    vec4(vec3 xyz, float w) : x(xyz.x), y(xyz.y), z(xyz.z), w(w) {} 
 
     vec4 operator*(const vec4& a) const {
         return vec4(a.x * x, a.y * y, a.z * z, a.w * w);

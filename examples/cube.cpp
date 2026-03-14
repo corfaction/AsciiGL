@@ -1,25 +1,44 @@
 #include "../include/AsciiGL.hpp"
+#include <stdexcept>
+#include <iostream>
 
 using namespace AsciiGL;
 
 int main() {
 
-    size_t width, height;
     Terminal terminal;
     ScreenBuffer screen_buffer(terminal);
-
-    terminal.getWindowSize(width, height);
  
     // coordinates vertices of square
 
-    std::vector<std::vector<float>> square = 
+    std::vector<float> square = 
 
-    {{-0.7f, -0.7f, 0.0f,   1.0f, 0.0f, 0.0f, 1.0f},
-     { 0.7f, -0.7f, 0.0f,   0.0f, 1.0f, 0.0f, 1.0f},
-     {-0.7f,  0.7f, 0.0f,   0.0f, 0.0f, 1.0f, 1.0f},        
-     {-0.7f,  0.7f, 0.0f,   0.0f, 0.0f, 1.0f, 1.0f},
-     { 0.7f, -0.7f, 0.0f,   0.0f, 1.0f, 0.0f, 1.0f},
-     { 0.7f,  0.7f, 0.0f,   1.0f, 0.0f, 0.0f, 1.0f}};
+    //                VERTICES
+    //     POSITION              COLOR
+    {-0.7f, -0.7f, 0.0f,    1.0f, 0.0f, 0.0f, 
+      0.7f, -0.7f, 0.0f,    0.0f, 1.0f, 0.0f,
+     -0.7f,  0.7f, 0.0f,    0.0f, 0.0f, 1.0f,        
+      0.7f,  0.7f, 0.0f,    1.0f, 0.0f, 0.0f};
+
+    VBO* vbo = new VBO();
+    vbo->setData(square);
+
+    std::vector<unsigned int> indices =
+
+    {0, 1, 2,
+     2, 1, 3};
+
+    EBO* ebo = new EBO();
+    ebo->setData(indices);
+
+    VAO* vao = new VAO();
+    vao->bindEBO(ebo);
+    vao->bindVBO(vbo);
+
+    // addAttribute(index, size, offset)
+
+    vao->addAttribute(0, 3, 0);  // Position  
+    vao->addAttribute(1, 3, 3);  // Color
 
     Renderer renderer(screen_buffer);
 
@@ -27,8 +46,9 @@ int main() {
 
     while(true) {
         screen_buffer.clear();
-        renderer.drawTriangles(square);
+        renderer.drawTriangles(vao, 6);
         screen_buffer.swap();
         screen_buffer.present();
+
     }
 }
