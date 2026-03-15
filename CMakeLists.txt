@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 20)
 if(WIN32)
     set(PLATFORM_FILES src/platform/terminal_windows.cpp)
 else()
-    set(PLATFORM_FILES src/platform/terminal_linux.cpp)
+    set(PLATFORM_FILES src/platform/terminal_unix.cpp)
 endif()
 
 add_executable(AsciiGL

@@ -1,47 +1,49 @@
 #pragma once
 
 namespace AsciiGL {
-    struct Color {
-        float r, g, b, a;
 
-    	static constexpr char gradient[] = " .,:;|WB@";
-	static constexpr int gradientSize = 8;
-    
-        Color() : r(0.0f), g(0.0f), b(0.0f), a(1.0f) {}
+struct Color {
+    float r, g, b, a;
 
-        Color(float rgb) : r(rgb), g(rgb), b(rgb), a(1) {}
+	static constexpr char gradient[] = " .,:;|WB@";
+    static constexpr int gradientSize = 8;
 
-        Color(float red, float green, float blue, float alpha = 1.0f) 
-            : r(red), g(green), b(blue), a(alpha) {}
+    Color() : r(0.0f), g(0.0f), b(0.0f), a(1.0f) {}
 
-        Color(vec4 xyzw) : r(xyzw.x), g(xyzw.y), b(xyzw.z), a(xyzw.w) {}
+    Color(float rgb) : r(rgb), g(rgb), b(rgb), a(1) {}
 
-        Color operator*(const Color& other) const {
-            return Color(r * other.r, g * other.g, b * other.b, a * other.a);
-        }
-    
-        Color operator*(float scalar) const {
-            return Color(r * scalar, g * scalar, b * scalar, a);
-        }
-    
-        Color operator+(const Color& other) const {
-            return Color(r + other.r, g + other.g, b + other.b, a + other.a);
-        }
-     
-        vec4 toVec4() const { return vec4(r, g, b, a); }
+    Color(float red, float green, float blue, float alpha = 1.0f) 
+        : r(red), g(green), b(blue), a(alpha) {}
+
+    Color(vec4 xyzw) : r(xyzw.x), g(xyzw.y), b(xyzw.z), a(xyzw.w) {}
+
+    Color operator*(const Color& other) const {
+        return Color(r * other.r, g * other.g, b * other.b, a * other.a);
+    }
+
+    Color operator*(float scalar) const {
+        return Color(r * scalar, g * scalar, b * scalar, a);
+    }
+
+    Color operator+(const Color& other) const {
+        return Color(r + other.r, g + other.g, b + other.b, a + other.a);
+    }
  
-        Color alphaBlending(Color& b) const {
-            return *this * a + b * (1.0f - a);
-        }
+    vec4 toVec4() const { return vec4(r, g, b, a); }
  
-        char toChar() const {
-	       float index = (r * 0.2126f + g * 0.7152f + b * 0.0722f) * static_cast<float>(gradientSize);
-           if(index > 0 && index < 1) index = 1.0f;
+    Color alphaBlending(Color& b) const {
+        return *this * a + b * (1.0f - a);
+    }
+ 
+    char toChar() const {
+       float index = (r * 0.2126f + g * 0.7152f + b * 0.0722f) * static_cast<float>(gradientSize);
+       if(index > 0 && index < 1) index = 1.0f;
 
-	       return gradient[static_cast<int>(index)];
-	    }
+       return gradient[static_cast<int>(index)];
+    }
 
-	    int getGradientSize() const {return gradientSize;}
-     
-    };   
+    int getGradientSize() const {return gradientSize;}
+ 
+};   
+
 }

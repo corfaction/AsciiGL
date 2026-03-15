@@ -6,7 +6,9 @@ namespace AsciiGL {
 
 class Rasterizer{
 private:
+
     float width, height;
+    
 public:
 
     Rasterizer(float w, float h) : width(w), height(h) {}

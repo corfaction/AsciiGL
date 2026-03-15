@@ -13,12 +13,14 @@ struct Attribute {
 
 class VAO {
 private:
+
     int stride = 0;
     const VBO* vertex_buffer = nullptr;
     const EBO* index_buffer = nullptr;
     std::vector<Attribute> attributes;
     
 public:
+
     void bindVBO(const VBO* vbo) { vertex_buffer = vbo; }
     void bindEBO(const EBO* ebo) { index_buffer = ebo; }
     
@@ -37,8 +39,8 @@ public:
             if (attr.index == attributeIndex) {
                 size_t pos = vertexIndex * stride + attr.offset;
                 if (pos < data.size()) {
-                    for(int i = 0; i < attr.size + pos; ++i) {
-                        attr_data.push_back(data[pos + i]);
+                    for(int num = pos; num < attr.size + pos; ++num) {
+                        attr_data.push_back(data[num]);
                     }
                     return attr_data;
                 }

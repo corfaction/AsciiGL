@@ -51,4 +51,7 @@ int main() {
         screen_buffer.present();
 
     }
+
+    // Here we need to delete the pointer, but there is an infinite loop here, 
+    // so there is no point in it
 }

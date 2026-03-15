@@ -24,30 +24,30 @@ void Terminal::setChar(size_t x, size_t y, char c) {
     
     if (x >= width || y >= height) return;
     
-    if (cursorX == x && cursorY == y) {
+    if (cursor_x == x && cursor_y == y) {
         std::cout << c;
-        if (++cursorX == width) {
-            cursorX = 0;
-            ++cursorY;
+        if (++cursor_x == width) {
+            cursor_x = 0;
+            ++cursor_y;
         }
         return;
     }
     
     std::cout << "\033[" << (y + 1) << ';' << (x + 1) << 'H' << c;
-    cursorX = x + 1;
-    cursorY = y;
+    cursor_x = x + 1;
+    cursor_y = y;
     
-    if (cursorX == width) {
-        cursorX = 0;
-        ++cursorY;
+    if (cursor_x == width) {
+        cursor_x = 0;
+        ++cursor_y;
     }
     std::cout.flush();
 }
 
 void Terminal::resetCursor() {
     std::cout << "\033[0;0H";
-    cursorX = 0;
-    cursorY = 0;
+    cursor_x = 0;
+    cursor_y = 0;
 }
 
 void Terminal::getWindowSize(size_t& w, size_t& h) const {

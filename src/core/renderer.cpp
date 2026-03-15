@@ -69,12 +69,12 @@ void Renderer::drawTriangles(const VAO* vao, int vertex_num) {
 }
 
 std::vector<std::vector<float>> Renderer::vaoToAttributeMatrix(const VAO* vao, int vertex_index) const {
-        int index = vao->getIndex(vertex_index);
-        std::vector<std::vector<float>> vertex_data;
-        for(int a = 0; a < vao->getAttributeCount(); ++a) {
-            vertex_data.push_back(vao->getAttribute(index, a));
-        }
-        return vertex_data;
+    int index = vao->getIndex(vertex_index);
+    std::vector<std::vector<float>> vertex_data;
+    for(int a = 0; a < vao->getAttributeCount(); ++a) {
+        vertex_data.push_back(vao->getAttribute(index, a));
+    }
+    return vertex_data;
 }
 
 void Renderer::clearBuffer() {

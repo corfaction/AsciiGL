@@ -7,7 +7,7 @@ struct vec2 {
     float x, y;
 
     vec2() : x(0.0f), y(0.0f) {}
-    vec2(float i_x, float i_y) : x(i_x), y(i_y) {}
+    vec2(float x, float y) : x(x), y(y) {}
 
     vec2 operator*(const vec2& a) const {
         return vec2(a.x * x, a.y * y);
@@ -26,7 +26,7 @@ struct vec3 {
     float x, y, z;
 
     vec3() : x(0.0f), y(0.0f), z(0.0f) {}
-    vec3(float i_x, float i_y, float i_z) : x(i_x), y(i_y), z(i_z) {}
+    vec3(float x, float y, float z) : x(x), y(y), z(z) {}
     vec3(const std::vector<float>& xyz) {
         if(xyz.size() > 2) {
             x = xyz[0]; y = xyz[1]; z = xyz[2];   
@@ -50,7 +50,7 @@ struct vec4 {
     float x, y, z, w;
 
     vec4() : x(0.0f), y(0.0f), z(0.0f), w(0.0f) {}
-    vec4(float i_x, float i_y, float i_z, float i_w) : x(i_x), y(i_y), z(i_z), w(i_w) {}
+    vec4(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) {}
     vec4(vec3 xyz, float w) : x(xyz.x), y(xyz.y), z(xyz.z), w(w) {} 
 
     vec4 operator*(const vec4& a) const {
@@ -70,7 +70,7 @@ struct ivec2 {
     int x, y;
 
     ivec2() : x(0), y(0) {}
-    ivec2(int i_x, int i_y) : x(i_x), y(i_y) {}
+    ivec2(int x, int y) : x(x), y(y) {}
 
 
     ivec2 operator*(const ivec2 a) const {

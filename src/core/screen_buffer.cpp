@@ -28,7 +28,7 @@ ScreenBuffer::ScreenBuffer(Terminal& input_terminal) : terminal(input_terminal) 
 }
 
 void ScreenBuffer::setClearColor(char c) {
-        clear_color = c;
+    clear_color = c;
 }
 
 void ScreenBuffer::clear() {
