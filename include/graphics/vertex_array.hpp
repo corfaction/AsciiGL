@@ -29,15 +29,15 @@ public:
         stride = std::max(stride, offset + size);
     }
     
-    std::vector<float> getAttribute(int vertexIndex, int attributeIndex) const {
+    std::vector<float> getAttribute(int vertex_index, int attribute_index) const {
         std::vector<float> attr_data;
         if (!vertex_buffer) return attr_data;
         
         const auto& data = vertex_buffer->getData();
         
         for (const auto& attr : attributes) {
-            if (attr.index == attributeIndex) {
-                size_t pos = vertexIndex * stride + attr.offset;
+            if (attr.index == attribute_index) {
+                size_t pos = vertex_index * stride + attr.offset;
                 if (pos < data.size()) {
                     for(int num = pos; num < attr.size + pos; ++num) {
                         attr_data.push_back(data[num]);

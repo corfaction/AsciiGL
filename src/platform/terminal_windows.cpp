@@ -16,17 +16,17 @@ void Terminal::Impl::initialize() {
     mode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
     SetConsoleMode(h_console, mode);
     
-    CONSOLE_CURSOR_INFO cursorInfo;
-    GetConsoleCursorInfo(h_console, &cursorInfo);
-    cursorInfo.bVisible = false;
-    SetConsoleCursorInfo(h_console, &cursorInfo);
+    CONSOLE_CURSOR_INFO cursor_info;
+    GetConsoleCursorInfo(h_console, &cursor_info);
+    cursor_info.bVisible = false;
+    SetConsoleCursorInfo(h_console, &cursor_info);
 }
     
 void Terminal::Impl::cleanup() {
-    CONSOLE_CURSOR_INFO cursorInfo;
-    GetConsoleCursorInfo(h_console, &cursorInfo);
-    cursorInfo.bVisible = true;
-    SetConsoleCursorInfo(h_console, &cursorInfo);
+    CONSOLE_CURSOR_INFO cursor_info;
+    GetConsoleCursorInfo(h_console, &cursor_info);
+    cursor_info.bVisible = true;
+    SetConsoleCursorInfo(h_console, &cursor_info);
 }
 
 void Terminal::Impl::updateSize() {

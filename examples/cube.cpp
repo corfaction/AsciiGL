@@ -49,7 +49,6 @@ int main() {
         renderer.drawTriangles(vao, 6);
         screen_buffer.swap();
         screen_buffer.present();
-
     }
 
     // Here we need to delete the pointer, but there is an infinite loop here, 
