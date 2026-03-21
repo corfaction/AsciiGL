@@ -5,8 +5,8 @@ namespace AsciiGL {
 struct Color {
     float r, g, b, a;
 
-	static constexpr char gradient[] = " .,:;|WB@";
-    static constexpr int gradientSize = 8;
+    static constexpr char gradient[] = " .,:;if|}]ILNMWB@";
+    static constexpr int gradientSize = 18;
 
     Color() : r(0.0f), g(0.0f), b(0.0f), a(1.0f) {}
 

@@ -10,7 +10,7 @@ private:
     size_t screen_size;
     char* back_buffer;
     char* front_buffer;
-    char clear_color;
+    char clear_color = ' ';
     Terminal& terminal;
 
 public:

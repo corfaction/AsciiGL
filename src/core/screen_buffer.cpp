@@ -20,10 +20,8 @@ ScreenBuffer::ScreenBuffer(Terminal& input_terminal) : terminal(input_terminal) 
     back_buffer[screen_size] = '\0';
     front_buffer[screen_size] = '\0';
 
-    clear_color = ' ';
-
     for(size_t i = 0; i < height; i++) {
-            std::cout << std::endl;
+        std::cout << std::endl;
     }
 }
 

@@ -6,34 +6,34 @@
 
 using namespace AsciiGL;
 
-Terminal::Impl::Impl() : impl_width(80), impl_height(25) {
+TerminalImplUnix::TerminalImplUnix() : impl_width(80), impl_height(25) {
     initialize();
     updateSize();
 }
     
-void Terminal::Impl::initialize() {
+void TerminalImplUnix::initialize() {
     std::cout << "\033[?25l";
     std::cout.flush();
 }
     
-void Terminal::Impl::cleanup() {
+void TerminalImplUnix::cleanup() {
     std::cout << "\033[?25h";
     std::cout.flush();
 }
     
-void Terminal::Impl::updateSize() {
+void TerminalImplUnix::updateSize() {
     struct winsize w;
     ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
     impl_width = w.ws_col;
     impl_height = w.ws_row;
 }
     
-void Terminal::Impl::getWindowSize(size_t& w, size_t& h) const {
+void TerminalImplUnix::getWindowSize(size_t& w, size_t& h) const {
     w = impl_width;
     h = impl_height;
 }
 
-Terminal::Terminal() : pImpl(std::make_unique<Impl>()) {
+Terminal::Terminal() : pImpl(std::make_unique<TerminalImplUnix>()) {
     size_t w, h;
     pImpl->getWindowSize(w, h);
     width = w;

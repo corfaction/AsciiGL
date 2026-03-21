@@ -1,6 +1,16 @@
 #pragma once
 #include <memory>
 
+class TerminalImpl {
+public:
+    virtual ~TerminalImpl() = default;
+
+    virtual void getWindowSize(size_t&, size_t&) const = 0;
+    virtual float getAspectRatio() const = 0;
+    virtual void initialize() = 0;
+    virtual void cleanup() = 0;
+};
+
 namespace AsciiGL {
 
 class Terminal {
@@ -16,8 +26,7 @@ public:
     
 private:
 
-    class Impl;
-    std::unique_ptr<Impl> pImpl;
+    std::unique_ptr<TerminalImpl> pImpl;
     
     size_t width = 80;
     size_t height = 25;
