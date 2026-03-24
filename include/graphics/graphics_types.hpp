@@ -3,6 +3,8 @@
 #include "../math/color.hpp"
 
 namespace AsciiGL {
+
+using namespace Math;
     
 struct Vertex {
     vec4 pos;

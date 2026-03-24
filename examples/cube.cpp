@@ -3,6 +3,7 @@
 #include <iostream>
 
 using namespace AsciiGL;
+using namespace Math;
 
 int main() {
 
@@ -100,12 +101,12 @@ int main() {
 
         screen_buffer.flushBackBuffer();
 
-        mat4 model = matrix::translation(vec3(0.0f, 0.0f, -3.0f + sin(i)))
-            * matrix::rotation(vec3(i, i, i)) 
-            * matrix::scale(vec3(1.0f, 1.0f, 1.0f));
+        mat4 model = translation(vec3(0.0f, 0.0f, -3.0f + sin(i)))
+            * rotation(vec3(i, i, i)) 
+            * scale(vec3(1.0f, 1.0f, 1.0f));
             
         mat4 MVP =
-            matrix::perspective(60.0f * 3.14159f / 180.0f, static_cast<float>(width) / static_cast<float>(height) * terminal.getAspectRatio(), 0.1f, 1000.0f) 
+            perspective(degreesToRadians(60.0f), static_cast<float>(width) / static_cast<float>(height) * terminal.getAspectRatio(), 0.1f, 1000.0f) 
             * mat4(1.0f) // There is no representation matrix; instead, the identity matrix is ​​used for now. 
             * model;
 

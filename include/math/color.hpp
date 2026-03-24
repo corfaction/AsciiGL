@@ -3,6 +3,8 @@
 
 namespace AsciiGL {
 
+namespace Math {
+
 struct Color {
     float r, g, b, a;
 
@@ -47,5 +49,7 @@ struct Color {
     int getGradientSize() const {return gradientSize;}
  
 };   
+
+}
 
 }

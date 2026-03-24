@@ -9,6 +9,8 @@
 
 namespace AsciiGL {
 
+using namespace Math;
+
 using uniform_value = std::variant<
     float, vec2, vec3, vec4, ivec2, mat4, int,
     size_t, unsigned int 

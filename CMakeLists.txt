@@ -15,5 +15,7 @@ add_executable(AsciiGL
     src/core/terminal.cpp
     src/core/renderer.cpp
     src/graphics/rasterizer.cpp
+    src/math/mat.cpp
+    src/math/vec.cpp
     ${PLATFORM_FILES}
 )
