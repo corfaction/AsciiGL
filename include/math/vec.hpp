@@ -16,6 +16,7 @@ struct vec2 {
     vec2 operator*(const float& a) const;
 
     vec2 operator+(const vec2& a) const;
+    vec2 operator-(const vec2& a) const;
 };
 
 struct vec4;
@@ -51,7 +52,9 @@ struct vec4 {
 
     vec4 operator*(const vec4& a) const;
     vec4 operator*(const float& a) const;
+
     vec4 operator+(const vec4& a) const;
+    vec4 operator-(const vec4& a) const;
 };
 
 struct ivec2 {
@@ -64,6 +67,10 @@ struct ivec2 {
     ivec2 operator*(const float& a) const;
     ivec2 operator+(const ivec2& a) const;
 };
+
+float dot(const vec4& a, const vec4& b);
+float length(const vec3& v);
+vec4 normalize(const vec4& v);
 
 }
 

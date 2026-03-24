@@ -29,6 +29,12 @@ mat3::mat3(const mat4& m) {
     this->m[2] = vec3(m.m[2]);
 }
 
+mat3::mat3(float a, float b, float c, float d, float e, float f, float g, float h, float i) {
+    m[0] = vec3(a, b, c);
+    m[1] = vec3(d, e, f);
+    m[2] = vec3(g, h, i);
+}
+
 float& mat3::operator()(int row, int col) {
     if (row < 0 || row >= 3 || col < 0 || col >= 3)
         throw std::out_of_range("Index out of range");
@@ -81,6 +87,45 @@ void mat3::operator*=(const mat3& a) {
     *this = *this * a;
 }
 
+mat3 transpose(const mat3& a) {
+    mat3 m = mat3(0.0f);
+    for(int i = 0; i < 3; ++i) {
+        for(int j = 0; j < 3; ++j) {
+            m(i, j) = a(j, i);            
+        }
+    }
+    return m;
+}
+
+float determinant(const mat3& a) {
+    return 
+        a(0,0) * (a(1,1) * a(2,2) - a(1,2) * a(2,1)) -
+        a(1,0) * (a(0,1) * a(2,2) - a(0,2) * a(2,1)) +
+        a(2,0) * (a(0,1) * a(1,2) - a(0,2) * a(1,1));
+}
+
+mat3 inverse(const mat3& a) {
+    float det = determinant(a);
+    float invDet = 1.0f / det;
+
+    mat3 r;
+
+    r(0,0) =  (a(1,1)*a(2,2) - a(1,2)*a(2,1)) * invDet;
+    r(0,1) = -(a(0,1)*a(2,2) - a(0,2)*a(2,1)) * invDet;
+    r(0,2) =  (a(0,1)*a(1,2) - a(0,2)*a(1,1)) * invDet;
+
+    r(1,0) = -(a(1,0)*a(2,2) - a(1,2)*a(2,0)) * invDet;
+    r(1,1) =  (a(0,0)*a(2,2) - a(0,2)*a(2,0)) * invDet;
+    r(1,2) = -(a(0,0)*a(1,2) - a(0,2)*a(1,0)) * invDet;
+
+    r(2,0) =  (a(1,0)*a(2,1) - a(1,1)*a(2,0)) * invDet;
+    r(2,1) = -(a(0,0)*a(2,1) - a(0,1)*a(2,0)) * invDet;
+    r(2,2) =  (a(0,0)*a(1,1) - a(0,1)*a(1,0)) * invDet;
+
+    return r;
+}
+
+
 mat4::mat4(const vec4& r0, const vec4& r1, const vec4& r2, const vec4& r3) {
     m[0] = r0;
     m[1] = r1;
@@ -100,6 +145,13 @@ mat4::mat4(float diag) {
     m[1] = vec4(0, diag, 0, 0);
     m[2] = vec4(0, 0, diag, 0);
     m[3] = vec4(0, 0, 0, diag);
+}
+
+mat4::mat4(const mat3& m) {
+    this->m[0] = vec4(m.m[0], 0);
+    this->m[1] = vec4(m.m[1], 0);
+    this->m[2] = vec4(m.m[2], 0);
+    this->m[3] = vec4(0, 0, 0, 1);
 }
 
 float& mat4::operator()(int row, int col) {
@@ -155,6 +207,69 @@ mat4 mat4::operator*(const mat4& a) const {
 
 void mat4::operator*=(const mat4& a) {
     *this = *this * a;
+}
+
+mat4 transpose(const mat4& a) {
+    mat4 m = mat4(0.0f);
+    for(int i = 0; i < 4; ++i) {
+        for(int j = 0; j < 4; ++j) {
+            m(i, j) = a(j, i);            
+        }
+    }
+    return m;
+}
+
+float determinant(const mat4& a) {
+    return 
+        a(0,0) * determinant(mat3(
+            vec3(a(1,1), a(1,2), a(1,3)),
+            vec3(a(2,1), a(2,2), a(2,3)),
+            vec3(a(3,1), a(3,2), a(3,3))
+        )) -
+        a(0,1) * determinant(mat3(
+            vec3(a(1,0), a(1,2), a(1,3)),
+            vec3(a(2,0), a(2,2), a(2,3)),
+            vec3(a(3,0), a(3,2), a(3,3))
+        )) +
+        a(0,2) * determinant(mat3(
+            vec3(a(1,0), a(1,1), a(1,3)),
+            vec3(a(2,0), a(2,1), a(2,3)),
+            vec3(a(3,0), a(3,1), a(3,3))
+        )) -
+        a(0,3) * determinant(mat3(
+            vec3(a(1,0), a(1,1), a(1,2)),
+            vec3(a(2,0), a(2,1), a(2,2)),
+            vec3(a(3,0), a(3,1), a(3,2))
+        ));
+}
+
+mat4 inverse(const mat4& a) {
+    float det = determinant(a);
+    float invDet = 1.0f / det;
+
+    mat4 r;
+
+    r(0,0) =  determinant(mat3(a(1,1), a(1,2), a(1,3), a(2,1), a(2,2), a(2,3), a(3,1), a(3,2), a(3,3))) * invDet;
+    r(0,1) = -determinant(mat3(a(0,1), a(0,2), a(0,3), a(2,1), a(2,2), a(2,3), a(3,1), a(3,2), a(3,3))) * invDet;
+    r(0,2) =  determinant(mat3(a(0,1), a(0,2), a(0,3), a(1,1), a(1,2), a(1,3), a(3,1), a(3,2), a(3,3))) * invDet;
+    r(0,3) = -determinant(mat3(a(0,1), a(0,2), a(0,3), a(1,1), a(1,2), a(1,3), a(2,1), a(2,2), a(2,3))) * invDet;
+
+    r(1,0) = -determinant(mat3(a(1,0), a(1,2), a(1,3), a(2,0), a(2,2), a(2,3), a(3,0), a(3,2), a(3,3))) * invDet;
+    r(1,1) =  determinant(mat3(a(0,0), a(0,2), a(0,3), a(2,0), a(2,2), a(2,3), a(3,0), a(3,2), a(3,3))) * invDet;
+    r(1,2) = -determinant(mat3(a(0,0), a(0,2), a(0,3), a(1,0), a(1,2), a(1,3), a(3,0), a(3,2), a(3,3))) * invDet;
+    r(1,3) =  determinant(mat3(a(0,0), a(0,2), a(0,3), a(1,0), a(1,2), a(1,3), a(2,0), a(2,2), a(2,3))) * invDet;
+
+    r(2,0) =  determinant(mat3(a(1,0), a(1,1), a(1,3), a(2,0), a(2,1), a(2,3), a(3,0), a(3,1), a(3,3))) * invDet;
+    r(2,1) = -determinant(mat3(a(0,0), a(0,1), a(0,3), a(2,0), a(2,1), a(2,3), a(3,0), a(3,1), a(3,3))) * invDet;
+    r(2,2) =  determinant(mat3(a(0,0), a(0,1), a(0,3), a(1,0), a(1,1), a(1,3), a(3,0), a(3,1), a(3,3))) * invDet;
+    r(2,3) = -determinant(mat3(a(0,0), a(0,1), a(0,3), a(1,0), a(1,1), a(1,3), a(2,0), a(2,1), a(2,3))) * invDet;
+
+    r(3,0) = -determinant(mat3(a(1,0), a(1,1), a(1,2), a(2,0), a(2,1), a(2,2), a(3,0), a(3,1), a(3,2))) * invDet;
+    r(3,1) =  determinant(mat3(a(0,0), a(0,1), a(0,2), a(2,0), a(2,1), a(2,2), a(3,0), a(3,1), a(3,2))) * invDet;
+    r(3,2) = -determinant(mat3(a(0,0), a(0,1), a(0,2), a(1,0), a(1,1), a(1,2), a(3,0), a(3,1), a(3,2))) * invDet;
+    r(3,3) =  determinant(mat3(a(0,0), a(0,1), a(0,2), a(1,0), a(1,1), a(1,2), a(2,0), a(2,1), a(2,2))) * invDet;
+
+    return r;
 }
 
 mat4 translation(const vec3 t) {
@@ -218,44 +333,6 @@ mat4 perspective(float fov, float aspect, float near, float far) {
 
     return result;
 
-}
-
-mat3 transpose(const mat3& a) {
-    mat3 m = mat3(0.0f);
-    for(int i = 0; i < 3; ++i) {
-        for(int j = 0; j < 3; ++j) {
-            m(i, j) = a(j, i);            
-        }
-    }
-    return m;
-}
-
-float determinant(const mat3& a) {
-    return 
-        a.m[0].x * (a.m[1].y * a.m[2].z - a.m[1].z * a.m[2].y) -
-        a.m[1].x * (a.m[0].y * a.m[2].z - a.m[0].z * a.m[2].y) +
-        a.m[2].x * (a.m[0].y * a.m[1].z - a.m[0].z * a.m[1].y);
-}
-
-mat3 inverse(const mat3& a) {
-    float det = determinant(a);
-    float invDet = 1.0f / det;
-
-    mat3 r;
-
-    r(0,0) =  (a(1,1)*a(2,2) - a(1,2)*a(2,1)) * invDet;
-    r(0,1) = -(a(0,1)*a(2,2) - a(0,2)*a(2,1)) * invDet;
-    r(0,2) =  (a(0,1)*a(1,2) - a(0,2)*a(1,1)) * invDet;
-
-    r(1,0) = -(a(1,0)*a(2,2) - a(1,2)*a(2,0)) * invDet;
-    r(1,1) =  (a(0,0)*a(2,2) - a(0,2)*a(2,0)) * invDet;
-    r(1,2) = -(a(0,0)*a(1,2) - a(0,2)*a(1,0)) * invDet;
-
-    r(2,0) =  (a(1,0)*a(2,1) - a(1,1)*a(2,0)) * invDet;
-    r(2,1) = -(a(0,0)*a(2,1) - a(0,1)*a(2,0)) * invDet;
-    r(2,2) =  (a(0,0)*a(1,1) - a(0,1)*a(1,0)) * invDet;
-
-    return r;
 }
 
 float degreesToRadians(float degrees) {
