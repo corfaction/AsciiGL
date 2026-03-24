@@ -1,6 +1,7 @@
 #pragma once
 #include "graphics_types.hpp"
 #include "uniform_manager.hpp"
+#include <memory>
 #include <string>
 
 namespace AsciiGL {
@@ -55,8 +56,7 @@ public:
         mat4 MVP = uniform_manager->getUniform<mat4>("defaultShader", "MVP");
         
         Vertex vertex;
-        vertex.pos = vec4(vec3(attributes[0]), 1.0f);
-        vertex.pos = MVP * vertex.pos;
+        vertex.clip_pos = MVP * vec4(vec3(attributes[0]), 1.0f);
 
         vertex.color = vec4(vec3(attributes[1]), 1.0f);
 

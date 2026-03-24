@@ -5,6 +5,84 @@
 
 namespace AsciiGL {
 
+struct mat4;
+
+struct mat3 {
+    vec3 m[3];
+
+    mat3(const vec3& r0, const vec3& r1, const vec3& r2) {
+        m[0] = r0;
+        m[1] = r1;
+        m[2] = r2;
+    }
+
+    mat3() {
+        m[0] = vec3();
+        m[1] = vec3();
+        m[2] = vec3();
+    }
+
+    mat3(float diag) {
+        m[0] = vec3(diag, 0, 0);
+        m[1] = vec3(0, diag, 0);
+        m[2] = vec3(0, 0, diag);
+    }
+
+    mat3(const mat4& m);
+
+    float& operator()(int row, int col) {
+        if (row < 0 || row >= 3 || col < 0 || col >= 3)
+            throw std::out_of_range("Index out of range");
+
+        switch (col) {
+            case 0: return m[row].x;
+            case 1: return m[row].y;
+            case 2: return m[row].z;
+        }
+
+        throw std::out_of_range("Invalid column");
+    }
+
+    const float& operator()(int row, int col) const {
+        if (row < 0 || row >= 3 || col < 0 || col >= 3)
+            throw std::out_of_range("Index out of range");
+
+        switch (col) {
+            case 0: return m[row].x;
+            case 1: return m[row].y;
+            case 2: return m[row].z;
+        }
+
+        throw std::out_of_range("Invalid column");
+    }
+
+    vec3 operator*(const vec3& v) const {
+        return vec3(
+            m[0].x * v.x + m[0].y * v.y + m[0].z * v.z,
+            m[1].x * v.x + m[1].y * v.y + m[1].z * v.z,
+            m[2].x * v.x + m[2].y * v.y + m[2].z * v.z
+        );
+    }
+
+    mat3 operator*(const mat3& a) const {
+        mat3 result(0.0f);
+
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                for (int k = 0; k < 3; k++) {
+                    result(i, j) += (*this)(i, k) * a(k, j);
+                }
+            }
+        }
+
+        return result;
+    }
+
+    void operator*=(const mat3& a) {
+        *this = *this * a;
+    }
+};
+
 struct mat4 {
     vec4 m[4];
 
@@ -153,6 +231,50 @@ namespace matrix {
     return result;
 }
 
+}
+
+inline mat3::mat3(const mat4& m) {
+    this->m[0] = vec3(m.m[0]);
+    this->m[1] = vec3(m.m[1]);
+    this->m[2] = vec3(m.m[2]);
+}
+
+inline mat3 transpose(const mat3& a) {
+    mat3 m = mat3(0.0f);
+    for(int i = 0; i < 3; ++i) {
+        for(int j = 0; j < 3; ++j) {
+            m(i, j) = a(j, i);            
+        }
+    }
+    return m;
+}
+
+inline float determinant(const mat3& a) {
+    return 
+        a.m[0].x * (a.m[1].y * a.m[2].z - a.m[1].z * a.m[2].y) -
+        a.m[1].x * (a.m[0].y * a.m[2].z - a.m[0].z * a.m[2].y) +
+        a.m[2].x * (a.m[0].y * a.m[1].z - a.m[0].z * a.m[1].y);
+}
+
+inline mat3 inverse(const mat3& a) {
+    float det = determinant(a);
+    float invDet = 1.0f / det;
+
+    mat3 r;
+
+    r(0,0) =  (a(1,1)*a(2,2) - a(1,2)*a(2,1)) * invDet;
+    r(0,1) = -(a(0,1)*a(2,2) - a(0,2)*a(2,1)) * invDet;
+    r(0,2) =  (a(0,1)*a(1,2) - a(0,2)*a(1,1)) * invDet;
+
+    r(1,0) = -(a(1,0)*a(2,2) - a(1,2)*a(2,0)) * invDet;
+    r(1,1) =  (a(0,0)*a(2,2) - a(0,2)*a(2,0)) * invDet;
+    r(1,2) = -(a(0,0)*a(1,2) - a(0,2)*a(1,0)) * invDet;
+
+    r(2,0) =  (a(1,0)*a(2,1) - a(1,1)*a(2,0)) * invDet;
+    r(2,1) = -(a(0,0)*a(2,1) - a(0,1)*a(2,0)) * invDet;
+    r(2,2) =  (a(0,0)*a(1,1) - a(0,1)*a(1,0)) * invDet;
+
+    return r;
 }
 
 }

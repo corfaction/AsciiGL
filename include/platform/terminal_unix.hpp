@@ -16,7 +16,7 @@ public:
     float getAspectRatio() const override { return 0.5f; }
     void initialize() override;
     void cleanup() override;
-    void updateSize();
+    void updateSize() override;
 };
 
 }

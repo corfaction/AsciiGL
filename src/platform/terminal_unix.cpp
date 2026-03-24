@@ -40,4 +40,7 @@ Terminal::Terminal() : pImpl(std::make_unique<TerminalImplUnix>()) {
     height = h;
     cursor_x = 0;
     cursor_y = 0;
+    for(size_t i = 0; i < height; i++) {
+        std::cout << std::endl;
+    }
 }

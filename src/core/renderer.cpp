@@ -4,30 +4,30 @@
 #include "../../include/graphics/graphics_types.hpp"
 #include "../../include/graphics/vertex_array.hpp"
 #include "../../include/graphics/shader_program.hpp"
+#include <algorithm>
 #include <stdexcept>
 #include <vector>
 #include <memory>
 
 using namespace AsciiGL;
 
-Renderer::Renderer(ScreenBuffer& input_screen) : 
-    screen(input_screen), 
-    width(screen.getWidth()), height(screen.getHeight()),
-    screen_size(width * height),
-    rasterizer(width, height),
+Renderer::Renderer() : 
     shader_program(std::make_shared<DefaultShader>()),
     global_uniform_manager(std::make_shared<UniformManager>())
-{
-    buffer = new char[screen_size + 1];
-    buffer[screen_size] = '\0';
-}
+{}
 
-void Renderer::drawTriangles(const VAO* vao, int vertex_num) {
+void Renderer::draw(const VAO* vao, int vertex_num) {
     if(vertex_num % 3 != 0) 
         throw std::length_error("the triangle is missing vertices. vertex_num % 3 != 0");
 
-    rasterizer.clearZBuffer();
-    clearBuffer();
+    if(!target_screen_buffer) 
+        throw std::runtime_error("Screen buffer is not set. Call setTarget() before using this method.");
+
+    updateSize();
+
+    rasterizer.clearZBuffer(width, height);
+    
+    std::vector<ChangedSymbol> buffer;
 
     for(size_t triangle = 0; triangle < vertex_num / 3; ++triangle) {
 
@@ -42,7 +42,8 @@ void Renderer::drawTriangles(const VAO* vao, int vertex_num) {
 
         // Rasterization
 
-        std::vector<Fragment> fragments = rasterizer.makeTriangle(vertices);
+        std::vector<Fragment> fragments = 
+            rasterizer.makeTriangle(vertices, static_cast<float>(width), static_cast<float>(height));
 
         // Using a fragment shader
 
@@ -53,12 +54,17 @@ void Renderer::drawTriangles(const VAO* vao, int vertex_num) {
             if(fragment.screen_pos.y < 0) continue;
             if(fragment.screen_pos.x >= width) continue;
             if(fragment.screen_pos.y >= height) continue;
+
+            ChangedSymbol changed_symbol;
+
+            changed_symbol.index = fragment.screen_pos.y * width + fragment.screen_pos.x;
+            changed_symbol.c = fragment.color.toChar();
             
-            buffer[fragment.screen_pos.y * width + fragment.screen_pos.x] = fragment.color.toChar();
+            buffer.push_back(changed_symbol);
         }
 
     }
-    screen.drawBuffer(buffer); 
+    target_screen_buffer->drawBuffer(buffer); 
 }
 
 std::vector<std::vector<float>> Renderer::vaoToAttributeMatrix(const VAO* vao, int vertex_index) const {
@@ -68,12 +74,6 @@ std::vector<std::vector<float>> Renderer::vaoToAttributeMatrix(const VAO* vao, i
         vertex_data.push_back(vao->getAttribute(index, a));
     }
     return vertex_data;
-}
-
-void Renderer::clearBuffer() {
-    for(size_t j = 0; j < screen_size; ++j) {
-        buffer[j] = ' ';
-    }
 }
 
 void Renderer::setShaderProgram(std::shared_ptr<ShaderProgram> program) {
@@ -90,6 +90,16 @@ void Renderer::setUniformManager(std::shared_ptr<UniformManager> manager) {
     }
 }
 
-Renderer::~Renderer() {
-    delete[] buffer;
+void Renderer::setTarget(ScreenBuffer& input_screen_buffer) {
+    target_screen_buffer = &input_screen_buffer;
+}
+
+void Renderer::updateSize() {
+    size_t w = target_screen_buffer->getWidth();
+    size_t h = target_screen_buffer->getHeight();
+
+    if(w != width || h != height) {
+        width = w; 
+        height = h;
+    }
 }

@@ -6,23 +6,17 @@
 
 using namespace AsciiGL;
 
-Rasterizer::Rasterizer(const float w, const float h) : width(w), height(h) {
-    screen_size = static_cast<int>(w * h);
-    zbuffer = new float[screen_size];
-    clearZBuffer();
-}   
+std::vector<Fragment> Rasterizer::makeTriangle(std::vector<Vertex>& v, float w, float h) {
 
-std::vector<Fragment> Rasterizer::makeTriangle(std::vector<Vertex>& input_vertex) {
-
-    if (input_vertex.size() != 3)
+    if(v.size() != 3)
         throw std::length_error("vertices size != 3");
 
-    std::vector<Vertex> v = perspectiveDivision(input_vertex);
+    perspectiveDivision(v);
 
     std::vector<Fragment> fragments;
 
-    float step_x = 2.0f / width;
-    float step_y = 2.0f / height;
+    float step_x = 2.0f / w;
+    float step_y = 2.0f / h;
 
     float& x1 = v[0].pos.x; float& y1 = v[0].pos.y;
     float& x2 = v[1].pos.x; float& y2 = v[1].pos.y;
@@ -39,28 +33,28 @@ std::vector<Fragment> Rasterizer::makeTriangle(std::vector<Vertex>& input_vertex
     float min_y_ndc = std::max(std::min({y1, y2, y3}), -1.0f);
     float max_y_ndc = std::min(std::max({y1, y2, y3}),  1.0f);
 
-    int min_x = (int)((1.0f + min_x_ndc) * width * 0.5f);
-    int max_x = (int)((1.0f + max_x_ndc) * width * 0.5f) + 1;
-    int min_y = (int)((1.0f - max_y_ndc) * height * 0.5f);
-    int max_y = (int)((1.0f - min_y_ndc) * height * 0.5f) + 1;
+    int min_x = (int)((1.0f + min_x_ndc) * w * 0.5f);
+    int max_x = (int)((1.0f + max_x_ndc) * w * 0.5f) + 1;
+    int min_y = (int)((1.0f - max_y_ndc) * h * 0.5f);
+    int max_y = (int)((1.0f - min_y_ndc) * h * 0.5f) + 1;
 
     min_x = std::max((int)min_x, 0);
-    max_x = std::min(max_x, (int)width);
+    max_x = std::min(max_x, (int)w);
     min_y = std::max((int)min_y, 0);
-    max_y = std::min(max_y, (int)height);
+    max_y = std::min(max_y, (int)h);
 
-    float start_x_ndc = (min_x + 0.5f) * 2.0f / width - 1.0f;
-    float start_y_ndc = 1.0f - (min_y + 0.5f) * 2.0f / height;
+    float start_x_ndc = (min_x + 0.5f) * 2.0f / w - 1.0f;
+    float start_y_ndc = 1.0f - (min_y + 0.5f) * 2.0f / h;
 
     float E1, E2, E3;
 
     for(int y = min_y; y < max_y; ++y) {
         
-        float y_ndc = 1.0f - (y + 0.5f) * 2.0f / height;
+        float y_ndc = 1.0f - (y + 0.5f) * 2.0f / h;
         
         for(int x = min_x; x < max_x; ++x) {
             
-            float x_ndc = (x + 0.5f) * 2.0f / width - 1.0f;
+            float x_ndc = (x + 0.5f) * 2.0f / w - 1.0f;
             
             float e1 = (x_ndc - x1)*(y2 - y1) - (y_ndc - y1)*(x2 - x1);
             float e2 = (x_ndc - x2)*(y3 - y2) - (y_ndc - y2)*(x3 - x2);
@@ -81,12 +75,14 @@ std::vector<Fragment> Rasterizer::makeTriangle(std::vector<Vertex>& input_vertex
                 float depth = (z_ndc + 1.0f) * 0.5f;
                 depth = std::max(0.0f, std::min(1.0f, depth));
                 
-                int index = y * width + x;
+                int index = y * w + x;
                 
                 if(depth < zbuffer[index]) {
                     zbuffer[index] = depth;
-
+                    
+                    frag.frag_pos = v[0].frag_pos * alpha + v[1].frag_pos * beta + v[2].frag_pos * gamma;
                     frag.vertex_color = v[0].color * alpha + v[1].color * beta + v[2].color * gamma;
+                    frag.normal = v[0].normal * alpha + v[1].normal * beta + v[2].normal * gamma;
 
                     fragments.push_back(frag);
                 }
@@ -96,22 +92,20 @@ std::vector<Fragment> Rasterizer::makeTriangle(std::vector<Vertex>& input_vertex
     return fragments;
 }
 
-std::vector<Vertex> Rasterizer::perspectiveDivision(std::vector<Vertex>& v) const {
-    std::vector<Vertex> ndcVertices(3);
+void Rasterizer::perspectiveDivision(std::vector<Vertex>& v) const {
     for (int i = 0; i < v.size(); ++i) {
-        if (v[i].pos.w != 0.0f) {
-            ndcVertices[i].pos.x = v[i].pos.x / v[i].pos.w;
-            ndcVertices[i].pos.y = v[i].pos.y / v[i].pos.w;
-            ndcVertices[i].pos.z = v[i].pos.z / v[i].pos.w;
-            ndcVertices[i].pos.w = 1.0f;
-        } else {
-            ndcVertices[i].pos = v[i].pos;
+        if (v[i].clip_pos.w != 0.0f) {
+            v[i].pos.x = v[i].clip_pos.x / v[i].clip_pos.w;
+            v[i].pos.y = v[i].clip_pos.y / v[i].clip_pos.w;
+            v[i].pos.z = v[i].clip_pos.z / v[i].clip_pos.w;
+            v[i].pos.w = 1.0f;
         }
-        ndcVertices[i].color = v[i].color;
     }
-    return ndcVertices;
 }
 
-void Rasterizer::clearZBuffer() {
-    std::fill(zbuffer, zbuffer + screen_size, 1.0f);
+void Rasterizer::clearZBuffer(size_t w, size_t h) {
+    if(zbuffer) delete[] zbuffer;
+    zbuffer = new float[w * h];
+
+    std::fill(zbuffer, zbuffer + w * h, 1.0f);
 }

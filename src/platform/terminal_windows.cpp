@@ -1,5 +1,6 @@
 #include "../../include/platform/terminal_windows.hpp"
 #include <windows.h>
+#include <iostream>
 #include <memory>
 
 using namespace AsciiGL;
@@ -48,4 +49,7 @@ Terminal::Terminal() : pImpl(std::make_unique<TerminalImplWindows>()) {
     height = h;
     cursor_x = 0;
     cursor_y = 0;
+    for(size_t i = 0; i < height; i++) {
+        std::cout << std::endl;
+    }
 }

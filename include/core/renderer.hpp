@@ -10,26 +10,26 @@ namespace AsciiGL {
 class Renderer {
 private:
 
-    ScreenBuffer& screen;
+    ScreenBuffer* target_screen_buffer;
     size_t width, height;
     size_t screen_size;
     Rasterizer rasterizer;
     std::shared_ptr<ShaderProgram> shader_program;
     std::shared_ptr<UniformManager> global_uniform_manager;
-    char* buffer;
 
     std::vector<std::vector<float>> vaoToAttributeMatrix(const VAO* vao, int vertex_index) const;
     void clearBuffer();
 
 public:
 
-    Renderer(ScreenBuffer& input_screen);
+    Renderer();
 
-    void drawTriangles(const VAO* vao, int vertex_num);
+    void updateSize();
+    void draw(const VAO* vao, int vertex_num);
     void setShaderProgram(std::shared_ptr<ShaderProgram> shader_program);
     void setUniformManager(std::shared_ptr<UniformManager> manager);
-
-    ~Renderer();
+    void setTarget(ScreenBuffer& input_screen_buffer);
+    
 };
 
 }

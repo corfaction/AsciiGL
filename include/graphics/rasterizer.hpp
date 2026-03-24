@@ -7,17 +7,15 @@ namespace AsciiGL {
 class Rasterizer{
 private:
 
-    float width, height;
-    int screen_size;
-    float* zbuffer;
+    float* zbuffer = nullptr;
+
+    void perspectiveDivision(std::vector<Vertex>& v) const;
+    void updateSize(float w, float h);
     
 public:
 
-    Rasterizer(const float w, const float h);
-
-    std::vector<Fragment> makeTriangle(std::vector<Vertex>& v);
-    void clearZBuffer();
-    std::vector<Vertex> perspectiveDivision(std::vector<Vertex>& v) const;
+    std::vector<Fragment> makeTriangle(std::vector<Vertex>& v, float w, float h);
+    void clearZBuffer(size_t w, size_t h);
 
     ~Rasterizer() { delete[] zbuffer; zbuffer = nullptr; }
 };

@@ -1,5 +1,12 @@
 #pragma once
-#include "terminal.hpp"
+#include <vector>
+#include <memory>
+
+struct ChangedSymbol {
+    int x = -1, y = -1;
+    size_t index;
+    char c;
+};
 
 namespace AsciiGL {
 
@@ -8,25 +15,26 @@ private:
 
     size_t width, height;
     size_t screen_size;
-    char* back_buffer;
-    char* front_buffer;
+    std::unique_ptr<char[]> back_buffer;
+    std::unique_ptr<char[]> front_buffer;
     char clear_color = ' ';
-    Terminal& terminal;
+
+    void clearBuffer(char* buffer, char clear_color = ' ');
 
 public:
 
-    ScreenBuffer(Terminal& input_terminal);
+    ScreenBuffer(size_t w, size_t h);
 
     void setClearColor(const char c);
-    void clear();
     void swap();
-    void present(); 
-    void drawBuffer(char* input_buffer);
+    std::vector<ChangedSymbol> getChangesOnly(); 
+    void drawBuffer(std::vector<ChangedSymbol> input_buffer);
+    void flushBackBuffer();
+    void setSize(size_t w, size_t h);
 
-    size_t getWidth() const {return width;}
-    size_t getHeight() const {return height;}
-
-    ~ScreenBuffer();
+    size_t getWidth() const { return width; }
+    size_t getHeight() const { return height; }
+    
 };
 
 }

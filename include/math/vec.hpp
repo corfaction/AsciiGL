@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <cmath>
 
 namespace AsciiGL {
 
@@ -22,9 +23,12 @@ struct vec2 {
     }
 };
 
+struct vec4;
+
 struct vec3 {
     float x, y, z;
 
+    vec3(float a) : x(a), y(a), z(a) {}
     vec3() : x(0.0f), y(0.0f), z(0.0f) {}
     vec3(float x, float y, float z) : x(x), y(y), z(z) {}
     vec3(const std::vector<float>& xyz) {
@@ -32,6 +36,8 @@ struct vec3 {
             x = xyz[0]; y = xyz[1]; z = xyz[2];   
         }
     }
+
+    vec3(const vec4& v);
 
     vec3 operator*(const vec3& a) const {
         return vec3(a.x * x, a.y * y, a.z * z);
@@ -44,7 +50,25 @@ struct vec3 {
     vec3 operator+(const vec3& a) const {
         return vec3(a.x + x, a.y + y, a.z + z);
     }
+
+    vec3 operator-(const vec3& a) const {
+        return vec3(a.x - x, a.y - y, a.z - z);
+    }
 };
+
+inline float dot(const vec3& a, const vec3& b) {
+    return a.x * b.x + a.y * b.y + a.z * b.z;
+}
+
+inline float length(const vec3& v) {
+    return std::sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
+}
+
+inline vec3 normalize(const vec3& v) {
+    float len = length(v);
+    if (len == 0.0f) return v;
+    return { v.x / len, v.y / len, v.z / len };
+}
 
 struct vec4 {
     float x, y, z, w;
@@ -85,5 +109,7 @@ struct ivec2 {
         return ivec2(x + a.x, y + a.y);
     }
 };
+
+inline vec3::vec3(const vec4& v) : x(v.x), y(v.y), z(v.z) {}
 
 }

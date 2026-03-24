@@ -1,68 +1,71 @@
 #include <iostream>
-#include <utility>
+#include <algorithm>
+#include <cstring>
 #include "../../include/core/screen_buffer.hpp"
 
 using namespace AsciiGL;
 
-ScreenBuffer::ScreenBuffer(Terminal& input_terminal) : terminal(input_terminal) {
+ScreenBuffer::ScreenBuffer(size_t w, size_t h) : width(w), height(h), screen_size(w * h) {
 
-    terminal.getWindowSize(width, height);
-    screen_size = width * height;
+    back_buffer = std::make_unique<char[]>(screen_size);
+    front_buffer = std::make_unique<char[]>(screen_size);
 
-    back_buffer = new char[screen_size + 1];
-    front_buffer = new char[screen_size + 1];
+    clearBuffer(back_buffer.get());
+    clearBuffer(front_buffer.get());
 
-    for(size_t i = 0; i < screen_size; ++i) {
-        back_buffer[i] = ' ';
-        front_buffer[i] = ' ';
-    }
+}
 
-    back_buffer[screen_size] = '\0';
-    front_buffer[screen_size] = '\0';
+void ScreenBuffer::clearBuffer(char* buffer, char clear_color) {
+    std::memset(buffer, clear_color, screen_size);
+}
 
-    for(size_t i = 0; i < height; i++) {
-        std::cout << std::endl;
-    }
+void ScreenBuffer::flushBackBuffer() {
+    clearBuffer(back_buffer.get(), clear_color);
 }
 
 void ScreenBuffer::setClearColor(char c) {
     clear_color = c;
 }
 
-void ScreenBuffer::clear() {
-    for(size_t i = 0; i < screen_size; ++i) {
-        back_buffer[i] = clear_color;
-    }
-}
-
 void ScreenBuffer::swap() {
     std::swap(back_buffer, front_buffer);
 }
 
-void ScreenBuffer::present() {
-    int index = 0;
-    for(size_t y = 0; y < height; ++y) {
-        for(size_t x = 0; x < width; ++x) {
-            if(front_buffer[index] != back_buffer[index]) {
-                terminal.setChar(x, y, front_buffer[index]);
-            }
-            index++;
+std::vector<ChangedSymbol> ScreenBuffer::getChangesOnly() {
+    std::vector<ChangedSymbol> changes;
+
+    for(size_t i = 0; i < screen_size; ++i) {
+        if(front_buffer[i] != back_buffer[i]) {
+            ChangedSymbol changed_symbol;
+
+            changed_symbol.index = i;
+            changed_symbol.c = front_buffer[i];
+
+            changed_symbol.x = i % width;
+            changed_symbol.y = i / width;
+
+            changes.push_back(changed_symbol);
         }
     }
-    terminal.resetCursor();
+
+    return changes;
 }
 
-void ScreenBuffer::drawBuffer(char* input_buffer) {
-    for(size_t i = 0; i < screen_size; ++i) {
-            if(input_buffer[i] != ' ') 
-                back_buffer[i] = input_buffer[i];
+void ScreenBuffer::drawBuffer(std::vector<ChangedSymbol> input_buffer) {
+    for(auto& sym : input_buffer) {
+        back_buffer[sym.index] = sym.c;
     }
 }
 
-ScreenBuffer::~ScreenBuffer() {
-    delete[] back_buffer;
-    delete[] front_buffer;
-    back_buffer = nullptr;
-    front_buffer = nullptr;
+void ScreenBuffer::setSize(size_t w, size_t h) {
+
+    back_buffer.reset(new char[screen_size]);
+    front_buffer.reset(new char[screen_size]);
+
+    clearBuffer(back_buffer.get());
+    clearBuffer(front_buffer.get());
+
+    width = w;
+    height = h;
 }
 

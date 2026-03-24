@@ -1,5 +1,6 @@
 #pragma once
 #include <memory>
+#include "screen_buffer.hpp"
 
 class TerminalImpl {
 public:
@@ -9,6 +10,7 @@ public:
     virtual float getAspectRatio() const = 0;
     virtual void initialize() = 0;
     virtual void cleanup() = 0;
+    virtual void updateSize() = 0;
 };
 
 namespace AsciiGL {
@@ -19,10 +21,11 @@ public:
     Terminal();
     ~Terminal();
     
-    void setChar(size_t x, size_t y, char c);
     void resetCursor();
     void getWindowSize(size_t& w, size_t& h) const;
     float getAspectRatio() const;
+    void present(ScreenBuffer& screen_buffer);
+    bool updateSize();
     
 private:
 
