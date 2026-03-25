@@ -339,6 +339,6 @@ float degreesToRadians(float degrees) {
     return degrees * PI / 180.0;
 }
 
-}
+} // Math
 
-}
+} // AsciiGL

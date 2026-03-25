@@ -11,6 +11,19 @@ struct Attribute {
     int offset; 
 };
 
+/**
+ * Vertex Array Object that defines how vertex data is interpreted.
+ * 
+ * VAO stores the layout of vertex attributes within a VBO and optionally
+ * associates an EBO for indexed rendering.
+ * 
+ * Key responsibilities:
+ * - Defines attribute layout (stride, offsets, sizes)
+ * - Associates VBO with vertex data
+ * - Optionally associates EBO for indexed drawing
+ * - Provides methods to extract per-vertex attribute data
+ */
+
 class VAO {
 private:
 
@@ -56,4 +69,4 @@ public:
     size_t getAttributeCount() const { return attributes.size(); }
 };
 
-}
+} // AsciiGL

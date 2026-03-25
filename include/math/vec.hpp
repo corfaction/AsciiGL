@@ -1,3 +1,5 @@
+// This file contains declaration vectors and math methods for work with them
+
 #pragma once
 #include <vector>
 #include <cmath>
@@ -18,6 +20,10 @@ struct vec2 {
     vec2 operator+(const vec2& a) const;
     vec2 operator-(const vec2& a) const;
 };
+
+float dot(const vec2& a, const vec2& b);
+float length(const vec2& v);
+vec2 normalize(const vec2& v);
 
 struct vec4;
 
@@ -72,6 +78,6 @@ float dot(const vec4& a, const vec4& b);
 float length(const vec3& v);
 vec4 normalize(const vec4& v);
 
-}
+} // Math
 
-}
+} // AsciiGL

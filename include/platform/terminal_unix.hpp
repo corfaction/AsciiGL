@@ -3,6 +3,12 @@
 
 namespace AsciiGL {
 
+/**
+ * Implementation terminal work for unix-like system
+ * - ANSI escape sequences for clean and cursor control
+ * - ioctl() for window size retrieval (TIOCGWINSZ)
+*/
+
 class TerminalImplUnix : public TerminalImpl {
 private:
 
@@ -19,4 +25,4 @@ public:
     void updateSize() override;
 };
 
-}
+} // AsciiGL

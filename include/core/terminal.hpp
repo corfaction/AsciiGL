@@ -2,6 +2,17 @@
 #include <memory>
 #include "screen_buffer.hpp"
 
+namespace AsciiGL {
+
+/**
+ * Abstract base class for cross-platform terminal operations.
+ * 
+ * This class defines the interface for terminal manipulation:
+ * - Character output
+ * - Cursor positioning
+ * - Window size retrieval
+ */
+
 class TerminalImpl {
 public:
     virtual ~TerminalImpl() = default;
@@ -13,7 +24,13 @@ public:
     virtual void updateSize() = 0;
 };
 
-namespace AsciiGL {
+/**
+ * This class provides methods for:
+ * - Getting the current terminal window size for proper scaling
+ * - Getting the character aspect ratio
+ * - Displays the contents of the screen buffer by calling the screen buffer.getChangesOnly() method.
+ * - When you change the screen size, the indents are removed and new ones are added.
+*/
 
 class Terminal {
 public:
@@ -37,4 +54,4 @@ private:
     size_t cursor_y = 0;
 };
 
-}
+} // AsciiGL

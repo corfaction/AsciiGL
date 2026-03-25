@@ -130,6 +130,6 @@ ivec2 ivec2::operator+(const ivec2& a) const {
     return ivec2(x + a.x, y + a.y);
 }
 
-}
+} // Math
 
-}
+} // AsciiGL

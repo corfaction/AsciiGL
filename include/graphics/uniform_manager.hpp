@@ -1,9 +1,7 @@
 #pragma once
 #include "../math/mat.hpp"
 #include "../math/vec.hpp"
-#include "graphics_types.hpp"
 #include <unordered_map>
-#include <stdexcept>
 #include <string>
 #include <variant>
 
@@ -16,51 +14,66 @@ using uniform_value = std::variant<
     size_t, unsigned int 
 >;
 
+/**
+ * Container for uniform variables associated with a single shader program.
+ * 
+ * UniformBlock stores a collection of named uniform values that are passed to
+ * a shader program. Each uniform is identified by a string name and can hold
+ * various types (scalars, vectors, matrices).
+ * 
+ * Features:
+ * - Type-safe set() and get() operations with template methods
+ * - Runtime type checking prevents invalid type conversions
+ * - Iteration over all uniform names
+ * - Individual uniform removal and batch clearing
+ */
+
 class UniformBlock {
 private:
 
     std::unordered_map<std::string, uniform_value> uniforms;
 
 public:
+    
+    bool has(const std::string& name) const;
+    void remove(const std::string& name);
+    void clear();
+    
+    std::vector<std::string> getNames() const;
+
     template<typename T>
     void set(const std::string& name, const T& value) {
         uniforms[name] = uniform_value(value);
     }
-    
+
     template<typename T>
     T get(const std::string& name) const {
         auto it = uniforms.find(name);
         if (it == uniforms.end()) {
             throw std::runtime_error("Uniform not found: " + name);
         }
-        
+
         try {
             return std::get<T>(it->second);
         } catch (const std::bad_variant_access&) {
             throw std::runtime_error("Uniform type mismatch: " + name);
         }
     }
-    
-    bool has(const std::string& name) const {
-        return uniforms.find(name) != uniforms.end();
-    }
-    
-    void remove(const std::string& name) {
-        uniforms.erase(name);
-    }
-    
-    void clear() {
-        uniforms.clear();
-    }
-    
-    std::vector<std::string> getNames() const {
-        std::vector<std::string> names;
-        for (const auto& [name, _] : uniforms) {
-            names.push_back(name);
-        }
-        return names;
-    }
 };
+
+/**
+ * Central manager for uniform blocks across multiple shader programs.
+ * 
+ * UniformManager maintains a collection of UniformBlock objects, each associated
+ * with a named shader program. This allows each shader to have its own independent
+ * set of uniforms while providing a unified interface for accessing them.
+ * 
+ * Features:
+ * - Per-shader uniform blocks identified by shader name
+ * - Type-safe uniform access through template methods
+ * - Automatic block creation when accessing new shaders
+ * - Batch operations (clear all, remove shader)
+ */
 
 class UniformManager {
 private:
@@ -69,9 +82,7 @@ private:
 
 public:
 
-    UniformBlock& getShaderBlock(const std::string& shader_name) {
-        return shaders_uniforms[shader_name];
-    }
+    UniformBlock& getShaderBlock(const std::string& shader_name);
     
     template<typename T>
     void setUniform(const std::string& shader_name, const std::string& uniform_name, const T& value) {
@@ -87,31 +98,12 @@ public:
         return it->second.get<T>(uniform_name);
     }
     
-    bool hasShader(const std::string& shader_name) const {
-        return shaders_uniforms.find(shader_name) != shaders_uniforms.end();
-    }
+    bool hasShader(const std::string& shader_name) const;
+    bool hasUniform(const std::string& shader_name, const std::string& uniform_name) const;
+    void removeShader(const std::string& shader_name);
+    void clearAll();
     
-    bool hasUniform(const std::string& shader_name, const std::string& uniform_name) const {
-        auto it = shaders_uniforms.find(shader_name);
-        if (it == shaders_uniforms.end()) return false;
-        return it->second.has(uniform_name);
-    }
-    
-    void removeShader(const std::string& shader_name) {
-        shaders_uniforms.erase(shader_name);
-    }
-    
-    void clearAll() {
-        shaders_uniforms.clear();
-    }
-    
-    std::vector<std::string> getShaderNames() const {
-        std::vector<std::string> names;
-        for (const auto& [name, _] : shaders_uniforms) {
-            names.push_back(name);
-        }
-        return names;
-    }
+    std::vector<std::string> getShaderNames() const;
 };
 
-}
+} // AsciiGL

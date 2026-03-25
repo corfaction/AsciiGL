@@ -2,6 +2,8 @@
 #include <vector>
 
 namespace AsciiGL {
+ 
+// VBO manages a buffer of vertex data 
 
 class VBO {
 private:
@@ -15,6 +17,12 @@ public:
     size_t getSize() {return data.size();}
 };
 
+/**
+ * IndexBuffer stores indices that reference vertices in a VBO.
+ * This allows sharing vertices between multiple primitives,
+ * reducing memory usage and improving performance.
+*/
+
 class EBO {
 private:
 
@@ -27,4 +35,4 @@ public:
     size_t getSize() const { return indices.size(); }
 };
 
-}
+} // AsciiGL

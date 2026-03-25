@@ -75,4 +75,4 @@ bool Terminal::updateSize() {
     }
 }
 
-}
+} // AsciiGL

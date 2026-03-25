@@ -4,6 +4,12 @@
 
 namespace AsciiGL {
 
+/**
+ * Implementation terminal work for windows
+ * - ANSI escape sequences for cursor control
+ * - CONSOLE_SCREEN_BUFFER_INFO for window size retrieval
+*/
+
 class TerminalImplWindows : public TerminalImpl {
 private:
 
@@ -23,4 +29,4 @@ public:
     void updateSize() override;
 };
 
-}
+} // AsciiGL

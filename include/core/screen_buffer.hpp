@@ -2,13 +2,27 @@
 #include <vector>
 #include <memory>
 
+namespace AsciiGL {
+
+// This structure is needed to store only the modified symbol
+
 struct ChangedSymbol {
     int x = -1, y = -1;
     size_t index;
     char c;
 };
 
-namespace AsciiGL {
+ /** 
+ * ScreenBuffer class is double-buffered character array for efficient terminal output.
+ * 
+ * ScreenBuffer maintains two buffers:
+ * - A back buffer for drawing operations
+ * - A front buffer representing the current terminal state
+ * 
+ * When present() is called, only characters that differ between the two
+ * buffers are sent to the terminal, significantly improving performance
+ * for partial screen updates.
+ */
 
 class ScreenBuffer {
 private:
@@ -37,4 +51,4 @@ public:
     
 };
 
-}
+} // AsciiGL

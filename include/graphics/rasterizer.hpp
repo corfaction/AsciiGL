@@ -4,6 +4,14 @@
 
 namespace AsciiGL {
 
+/** 
+ * The Rasterizer takes primitives (triangles) defined by vertices and:
+ * - Generates all fragments (pixels) covered by the primitive
+ * - Interpolates vertex attributes across the primitive surface
+ * - Performs clipping against screen boundaries
+ * - Produces fragments for the fragment shader to process
+*/
+
 class Rasterizer{
 private:
 
@@ -20,4 +28,4 @@ public:
     ~Rasterizer() { delete[] zbuffer; zbuffer = nullptr; }
 };
 
-}
+} // AsciiGL

@@ -1,3 +1,5 @@
+// This file contains declaration matrices and math methods for work with them
+
 #pragma once
 #include "vec.hpp"
 #include <stdexcept>
@@ -27,6 +29,10 @@ struct mat3 {
     void operator*=(const mat3& a);
 };
 
+mat3 transpose(const mat3& a);
+mat3 inverse(const mat3& a);
+float determinant(const mat3& a);
+
 struct mat4 {
     vec4 m[4];
 
@@ -45,10 +51,6 @@ struct mat4 {
 
 enum class Axis {X, Y, Z};
 
-mat3 transpose(const mat3& a);
-mat3 inverse(const mat3& a);
-float determinant(const mat3& a);
-
 mat4 transpose(const mat4& a);
 mat4 inverse(const mat4& a);
 float determinant(const mat4& a);
@@ -62,6 +64,6 @@ mat4 perspective(float fov, float aspect, float near, float far);
 
 float degreesToRadians(float degrees);
 
-}
+} // Math
 
-}
+} // AsciiGL
