@@ -20,7 +20,7 @@ struct Attribute {
  * Key responsibilities:
  * - Defines attribute layout (stride, offsets, sizes)
  * - Associates VBO with vertex data
- * - Optionally associates EBO for indexed drawing
+* - Optionally associates EBO for indexed drawing
  * - Provides methods to extract per-vertex attribute data
  */
 
@@ -67,6 +67,10 @@ public:
         return index_buffer ? index_buffer->getData()[i] : i; 
     }
     size_t getAttributeCount() const { return attributes.size(); }
+
+    size_t getVertexCount() const {
+        return vertex_buffer->getData().size() / stride;
+    }
 };
 
 } // AsciiGL

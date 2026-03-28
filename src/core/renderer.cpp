@@ -29,24 +29,30 @@ void Renderer::draw(const VAO* vao, int vertex_num) {
     
     std::vector<ChangedSymbol> buffer;
 
+    // Using a vertex shader
+
+    std::vector<Vertex> vertices;
+
+    vertices.reserve(vao->getVertexCount());
+
+    for(size_t vertex = 0; vertex < vao->getVertexCount(); ++vertex) {
+        auto vertex_matrix = vaoToAttributeMatrix(vao, vertex);
+        vertices.push_back(shader_program->vertexShader(vertex_matrix));
+    }
+
     for(size_t triangle = 0; triangle < vertex_num / 3; ++triangle) {
-
-        std::vector<Vertex> vertices;
-
-        // Using a vertex shader
-
-        for(size_t vertex = 0; vertex < 3; ++vertex) {
-            auto vertex_matrix = vaoToAttributeMatrix(vao, 3 * triangle + vertex);
-            vertices.push_back(shader_program->vertexShader(vertex_matrix));
-        }
 
         // Rasterization
 
+        auto& v1 = vertices[vao->getIndex(triangle * 3)];
+        auto& v2 = vertices[vao->getIndex(triangle * 3 + 1)];
+        auto& v3 = vertices[vao->getIndex(triangle * 3 + 2)];
+
         std::vector<Fragment> fragments = 
-            rasterizer.makeTriangle(vertices, static_cast<float>(width), static_cast<float>(height));
+            rasterizer.makeTriangle(v1, v2, v3, static_cast<float>(width), static_cast<float>(height));
 
         // Using a fragment shader
-
+        
         for(Fragment& fragment : fragments) {
             shader_program->fragmentShader(fragment);
 
@@ -67,9 +73,11 @@ void Renderer::draw(const VAO* vao, int vertex_num) {
     target_screen_buffer->drawBuffer(buffer); 
 }
 
-std::vector<std::vector<float>> Renderer::vaoToAttributeMatrix(const VAO* vao, int vertex_index) const {
-    int index = vao->getIndex(vertex_index);
+std::vector<std::vector<float>> Renderer::vaoToAttributeMatrix(const VAO* vao, int index) const {
     std::vector<std::vector<float>> vertex_data;
+
+    vertex_data.reserve(vao->getAttributeCount());
+
     for(int a = 0; a < vao->getAttributeCount(); ++a) {
         vertex_data.push_back(vao->getAttribute(index, a));
     }

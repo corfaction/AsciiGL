@@ -6,13 +6,13 @@ namespace AsciiGL {
 namespace Math {
 
 /**
-* This structure provides convenient operations for:
-* - Converting between RGB and gradient characters
-* - Blending and interpolating colors
-* 
-* Terminal color support:
-* - numbers from 0.0f to 1.0f
-* - alpha channel
+ * This structure provides convenient operations for:
+ * - Converting between RGB and gradient characters
+ * - Blending and interpolating colors
+ * 
+ * Terminal color support:
+ * - numbers from 0.0f to 1.0f
+ * - alpha channel
 */
 
 struct Color {

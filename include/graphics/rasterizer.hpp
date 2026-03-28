@@ -17,12 +17,16 @@ private:
 
     float* zbuffer = nullptr;
 
-    void perspectiveDivision(std::vector<Vertex>& v) const;
-    void updateSize(float w, float h);
+    void perspectiveDivision(Vertex& v) const;
+
+    template<typename T>
+    T interpolate(float alpha, float beta, float gamma, T& v1, T& v2, T& v3) const {
+        return v1 * alpha + v2 * beta + v3 * gamma;
+    }
     
 public:
 
-    std::vector<Fragment> makeTriangle(std::vector<Vertex>& v, float w, float h);
+    std::vector<Fragment> makeTriangle(Vertex& v1, Vertex& v2, Vertex& v3, float w, float h);
     void clearZBuffer(size_t w, size_t h);
 
     ~Rasterizer() { delete[] zbuffer; zbuffer = nullptr; }

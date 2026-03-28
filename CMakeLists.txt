@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(AskiiGL)
+project(AsciiGL)
 
 set(CMAKE_CXX_STANDARD 20)
 
