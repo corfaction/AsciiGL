@@ -1,4 +1,4 @@
-#include "../../include/platform/terminal_unix.hpp"
+#include "terminal_unix.hpp"
 #include "../../include/core/terminal.hpp"
 #include <sys/ioctl.h>
 #include <unistd.h>

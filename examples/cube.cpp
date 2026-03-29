@@ -1,4 +1,4 @@
-#include "../include/AsciiGL.hpp"
+#include <AsciiGL/AsciiGL.hpp>
 #include <stdexcept>
 #include <iostream>
 

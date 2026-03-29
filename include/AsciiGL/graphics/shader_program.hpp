@@ -1,6 +1,6 @@
 #pragma once
 #include "graphics_types.hpp"
-#include "uniform_manager.hpp"
+#include "../../../src/graphics/uniform_manager.hpp"
 #include <memory>
 #include <string>
 

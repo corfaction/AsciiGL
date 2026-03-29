@@ -1,4 +1,4 @@
-#include "../../include/platform/terminal_windows.hpp"
+#include "terminal_windows.hpp"
 #include <windows.h>
 #include <iostream>
 #include <memory>

@@ -1,7 +1,7 @@
 #include <iostream>
 #include <algorithm>
 #include <cstring>
-#include "../../include/core/screen_buffer.hpp"
+#include "../../include/AsciiGL/core/screen_buffer.hpp"
 
 using namespace AsciiGL;
 

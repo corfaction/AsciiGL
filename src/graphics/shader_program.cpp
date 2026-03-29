@@ -1,5 +1,5 @@
-#include "../../include/graphics/shader_program.hpp"
-#include "../../include/math/mat.hpp"
+#include "../../include/AsciiGL/graphics/shader_program.hpp"
+#include "../../include/AsciiGL/math/mat.hpp"
 #include <memory>
 #include <string>
 

@@ -1,6 +1,6 @@
 #pragma once
-#include "../math/mat.hpp"
-#include "../math/vec.hpp"
+#include "../../include/AsciiGl/math/mat.hpp"
+#include "../../include/AsciiGl/math/vec.hpp"
 #include <unordered_map>
 #include <string>
 #include <variant>

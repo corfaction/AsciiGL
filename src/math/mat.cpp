@@ -1,4 +1,4 @@
-#include "../../include/math/mat.hpp"
+#include "../../include/AsciiGL/math/mat.hpp"
 #include <stdexcept>
 
 namespace AsciiGL {

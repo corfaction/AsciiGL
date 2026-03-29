@@ -1,9 +1,8 @@
-#include "../../include/core/renderer.hpp"
-#include "../../include/core/screen_buffer.hpp"
-#include "../../include/graphics/rasterizer.hpp"
-#include "../../include/graphics/graphics_types.hpp"
-#include "../../include/graphics/vertex_array.hpp"
-#include "../../include/graphics/shader_program.hpp"
+#include "../../include/AsciiGL/core/screen_buffer.hpp"
+#include "../../include/AsciiGL/graphics/graphics_types.hpp"
+#include "../../include/AsciiGL/graphics/vertex_array.hpp"
+#include "../../include/AsciiGL/graphics/shader_program.hpp"
+#include "../../include/AsciiGL/core/renderer.hpp"
 #include <algorithm>
 #include <stdexcept>
 #include <vector>

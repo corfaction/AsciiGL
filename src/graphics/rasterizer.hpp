@@ -1,5 +1,5 @@
 #pragma once
-#include "graphics_types.hpp"
+#include "../../include/AsciiGL/graphics/graphics_types.hpp"
 #include <vector>
 
 namespace AsciiGL {

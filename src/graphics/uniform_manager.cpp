@@ -1,4 +1,4 @@
-#include "../../include/graphics/uniform_manager.hpp"
+#include "uniform_manager.hpp"
 #include <unordered_map>
 #include <stdexcept>
 #include <string>

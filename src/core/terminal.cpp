@@ -1,4 +1,4 @@
-#include "../../include/core/terminal.hpp"
+#include "../../include/AsciiGL/core/terminal.hpp"
 #include <memory>
 #include <iostream>
 

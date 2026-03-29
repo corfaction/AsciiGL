@@ -1,4 +1,4 @@
-#include "../../include/graphics/rasterizer.hpp"
+#include "rasterizer.hpp"
 #include <algorithm>
 #include <stdexcept>
 #include <vector>

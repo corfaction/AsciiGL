@@ -1,4 +1,4 @@
-#include "../../include/math/vec.hpp"
+#include "../../include/AsciiGL/math/vec.hpp"
 
 namespace AsciiGL {
 

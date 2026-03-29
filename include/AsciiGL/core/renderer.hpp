@@ -1,6 +1,6 @@
 #pragma once
 #include "screen_buffer.hpp"
-#include "../graphics/rasterizer.hpp"
+#include "../../../src/graphics/rasterizer.hpp"
 #include "../graphics/vertex_array.hpp"
 #include "../graphics/shader_program.hpp"
 #include <memory>

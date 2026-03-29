@@ -1,5 +1,5 @@
 #pragma once
-#include "../core/terminal.hpp"
+#include "../../include/AsciiGL/core/terminal.hpp"
 
 namespace AsciiGL {
 
