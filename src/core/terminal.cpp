@@ -1,4 +1,5 @@
 #include "../../include/AsciiGL/core/terminal.hpp"
+#include <stdexcept>
 #include <memory>
 #include <iostream>
 
@@ -49,30 +50,28 @@ void Terminal::present(ScreenBuffer& screen_buffer) {
 }
 
 bool Terminal::updateSize() {
-    if(pImpl) {
-        pImpl->updateSize();
+    if(!pImpl) throw std::logic_error("Pimpl is null in Terminal: invariant violation");
+    
+    pImpl->updateSize();
 
-        size_t width_clone = width;
-        size_t height_clone = height;
+    size_t width_clone = width;
+    size_t height_clone = height;
 
-        pImpl->getWindowSize(width, height);
+    pImpl->getWindowSize(width, height);
 
-        if(width != width_clone || height != height_clone) {
-
-            resetCursor();
-
-            std::cout << "\033[J";
-
-            for(int i = 0; i < height; i++) {
-                std::cout << std::endl;
-            }
-
-        }
-
+    if(width != width_clone || height != height_clone) {
         resetCursor();
-
-        return width != width_clone || height != height_clone; 
+        
+        std::cout << "\033[2J";
+        std::cout << "\033[H";
+        
+        std::cout.flush();
     }
+
+    resetCursor();
+    std::cout.flush();
+
+    return width != width_clone || height != height_clone; 
 }
 
 } // AsciiGL

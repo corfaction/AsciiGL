@@ -32,10 +32,12 @@ public:
 
 class ShaderProgram {
 protected:
+
     std::string name;
     std::shared_ptr<UniformManager> uniform_manager;
 
 public:
+
     ShaderProgram(const std::string& program_name = "default");
     
     virtual ~ShaderProgram() = default;

@@ -1,5 +1,5 @@
 #include "terminal_unix.hpp"
-#include "../../include/core/terminal.hpp"
+#include "../../include/AsciiGL/core/terminal.hpp"
 #include <sys/ioctl.h>
 #include <unistd.h>
 #include <iostream>

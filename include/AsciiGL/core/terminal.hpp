@@ -15,6 +15,7 @@ namespace AsciiGL {
 
 class TerminalImpl {
 public:
+
     virtual ~TerminalImpl() = default;
 
     virtual void getWindowSize(size_t&, size_t&) const = 0;

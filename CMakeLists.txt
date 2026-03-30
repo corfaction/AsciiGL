@@ -18,6 +18,7 @@ add_library(AsciiGL
     src/graphics/uniform_manager.cpp
     src/math/mat.cpp
     src/math/vec.cpp
+    src/math/color.cpp
     ${PLATFORM_FILES}
 )
 
