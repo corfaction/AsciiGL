@@ -7,7 +7,6 @@ namespace AsciiGL {
 // This structure is needed to store only the modified symbol
 
 struct ChangedSymbol {
-    int x = -1, y = -1;
     size_t index;
     char c;
 };

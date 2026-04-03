@@ -15,6 +15,10 @@ Renderer::Renderer() :
     global_uniform_manager(std::make_shared<UniformManager>())
 {}
 
+inline bool inBound(size_t width, size_t height, int index) {
+    return (index < 0 || index >= width * height) ? false : true;
+}
+
 void Renderer::draw(const VAO* vao, int vertex_num) {
     if(vertex_num % 3 != 0) 
         throw std::length_error("the triangle is missing vertices. vertex_num % 3 != 0");
@@ -51,18 +55,17 @@ void Renderer::draw(const VAO* vao, int vertex_num) {
             rasterizer.makeTriangle(v1, v2, v3, static_cast<float>(width), static_cast<float>(height));
 
         // Using a fragment shader
+
+        if(fragments.size() == 0) { continue; }
         
         for(Fragment& fragment : fragments) {
             shader_program->fragmentShader(fragment);
 
-            if(fragment.screen_pos.x < 0) continue;
-            if(fragment.screen_pos.y < 0) continue;
-            if(fragment.screen_pos.x >= width) continue;
-            if(fragment.screen_pos.y >= height) continue;
+            if(!inBound(width, height, fragment.index)) continue;
 
             ChangedSymbol changed_symbol;
 
-            changed_symbol.index = fragment.screen_pos.y * width + fragment.screen_pos.x;
+            changed_symbol.index = fragment.index;
             changed_symbol.c = fragment.color.toChar();
             
             buffer.push_back(changed_symbol);

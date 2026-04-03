@@ -1,3 +1,4 @@
+
 // This file contains declaration vectors and math methods for work with them
 
 #pragma once
@@ -43,6 +44,8 @@ struct vec3 {
 
     vec3 operator+(const vec3& a) const;
     vec3 operator-(const vec3& a) const;
+
+    vec2 xy() const {return vec2(x, y);}
 };
 
 float dot(const vec3& a, const vec3& b);
@@ -61,6 +64,9 @@ struct vec4 {
 
     vec4 operator+(const vec4& a) const;
     vec4 operator-(const vec4& a) const;
+
+    vec2 xy() const {return vec2(x, y);}
+    vec3 xyz() const {return vec3(x, y, z);}
 };
 
 struct ivec2 {

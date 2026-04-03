@@ -41,9 +41,6 @@ std::vector<ChangedSymbol> ScreenBuffer::getChangesOnly() {
             changed_symbol.index = i;
             changed_symbol.c = front_buffer[i];
 
-            changed_symbol.x = i % width;
-            changed_symbol.y = i / width;
-
             changes.push_back(changed_symbol);
         }
     }

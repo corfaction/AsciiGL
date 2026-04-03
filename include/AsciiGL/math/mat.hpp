@@ -1,3 +1,4 @@
+
 // This file contains declaration matrices and math methods for work with them
 
 #pragma once

@@ -16,6 +16,7 @@ add_library(AsciiGL
     src/graphics/rasterizer.cpp
     src/graphics/shader_program.cpp
     src/graphics/uniform_manager.cpp
+    src/graphics/vertex_array.cpp
     src/math/mat.cpp
     src/math/vec.cpp
     src/math/color.cpp

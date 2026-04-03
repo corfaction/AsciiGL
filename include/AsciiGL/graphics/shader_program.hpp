@@ -77,7 +77,7 @@ public:
 
     Vertex vertexShader(const std::vector<std::vector<float>>& attributes) const override;
 
-    virtual void fragmentShader(Fragment& fragment) const override;
+    void fragmentShader(Fragment& fragment) const override;
 
 };
 

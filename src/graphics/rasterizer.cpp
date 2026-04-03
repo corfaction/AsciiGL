@@ -6,6 +6,31 @@
 
 using namespace AsciiGL;
 
+inline float edgeFunction(const vec2& A, const vec2& B, const float& x, const float& y) {
+    return (x - A.x)*(B.y - A.y) - (y - A.y)*(B.x - A.x);
+}
+
+struct BoundingBox {
+    int min_x, min_y, max_x, max_y;
+    
+    BoundingBox(const vec2& A, const vec2& B, const vec2& C, const float& w, const float& h) {
+
+        // Calculate bounding box
+
+        min_x = (int)((1.0f + std::max(std::min({A.x, B.x, C.x}), -1.0f)) * w * 0.5f);
+        max_x = (int)((1.0f + std::min(std::max({A.x, B.x, C.x}),  1.0f)) * w * 0.5f) + 1;
+        min_y = (int)((1.0f - std::min(std::max({A.y, B.y, C.y}),  1.0f)) * h * 0.5f);
+        max_y = (int)((1.0f - std::max(std::min({A.y, B.y, C.y}), -1.0f)) * h * 0.5f) + 1;
+
+        // Limiting screen sizes
+
+        min_x = std::max((int)min_x, 0);
+        max_x = std::min(max_x, (int)w);
+        min_y = std::max((int)min_y, 0);
+        max_y = std::min(max_y, (int)h);
+    }
+};
+
 std::vector<Fragment> Rasterizer::makeTriangle(Vertex& v1, Vertex& v2, Vertex& v3, float w, float h) {
 
     perspectiveDivision(v1);
@@ -17,92 +42,78 @@ std::vector<Fragment> Rasterizer::makeTriangle(Vertex& v1, Vertex& v2, Vertex& v
     float step_x = 2.0f / w;
     float step_y = 2.0f / h;
 
-    float& x1 = v1.pos.x; float& y1 = v1.pos.y;
-    float& x2 = v2.pos.x; float& y2 = v2.pos.y;
-    float& x3 = v3.pos.x; float& y3 = v3.pos.y;    
+    vec2 A = v1.pos.xy(); 
+    vec2 B = v2.pos.xy(); 
+    vec2 C = v3.pos.xy();
 
-    float area = (x2 - x1)*(y3 - y1) - (x3 - x1)*(y2 - y1);
+    float area = (B.x - A.x)*(C.y - A.y) - (C.x - A.x)*(B.y - A.y);
 
-    // Checking for a degenerate triangle
-
-    if(area == 0) return fragments;
+    // Checking for a degenerate triangle and a CW triangle
+    if(area <= 0) return fragments;
 
     float inv_area = 1.0f / area;
 
-    // Bounding box
+    BoundingBox box(A, B, C, w, h);
 
-    float min_x_ndc = std::max(std::min({x1, x2, x3}), -1.0f);
-    float max_x_ndc = std::min(std::max({x1, x2, x3}),  1.0f);
-    float min_y_ndc = std::max(std::min({y1, y2, y3}), -1.0f);
-    float max_y_ndc = std::min(std::max({y1, y2, y3}),  1.0f);
+    fragments.reserve(std::abs(box.max_x - box.min_x * box.max_y - box.min_y) / 2);
 
-    // Translate bounding box from float to integer
-
-    int min_x = (int)((1.0f + min_x_ndc) * w * 0.5f);
-    int max_x = (int)((1.0f + max_x_ndc) * w * 0.5f) + 1;
-    int min_y = (int)((1.0f - max_y_ndc) * h * 0.5f);
-    int max_y = (int)((1.0f - min_y_ndc) * h * 0.5f) + 1;
-
-    // Limiting screen sizes
-
-    min_x = std::max((int)min_x, 0);
-    max_x = std::min(max_x, (int)w);
-    min_y = std::max((int)min_y, 0);
-    max_y = std::min(max_y, (int)h);
-
-    for(int y = min_y; y < max_y; ++y) {
+    for(int y = box.min_y; y < box.max_y; ++y) {
         
-        float y_ndc = 1.0f - (y + 0.5f) * 2.0f / h;
+        float y_ndc = 1.0f - (y + 0.5f) * step_y;
+
+        float x_start = box.min_x;
+        float x_ndc_start = (x_start + 0.5f) * step_x - 1.0f;
         
-        for(int x = min_x; x < max_x; ++x) {
-            
-            float x_ndc = (x + 0.5f) * 2.0f / w - 1.0f;
+        // Increments for the edge function
+        float e1_dx = (B.y - A.y) * step_x;
+        float e2_dx = (C.y - B.y) * step_x;
+        float e3_dx = (A.y - C.y) * step_x;
+        
+        float e1 = edgeFunction(A, B, x_ndc_start, y_ndc);
+        float e2 = edgeFunction(B, C, x_ndc_start, y_ndc);
+        float e3 = edgeFunction(C, A, x_ndc_start, y_ndc);
+        
+        for(int x = box.min_x; x < box.max_x; ++x) {
 
-            // Edge function
-            
-            float e1 = (x_ndc - x1)*(y2 - y1) - (y_ndc - y1)*(x2 - x1);
-            float e2 = (x_ndc - x2)*(y3 - y2) - (y_ndc - y2)*(x3 - x2);
-            float e3 = (x_ndc - x3)*(y1 - y3) - (y_ndc - y3)*(x1 - x3);
-            
-            if(e1 <= 0.0f && e2 <= 0.0f && e3 <= 0.0f) {
-                
-                Fragment frag;
-
-                frag.screen_pos.x = x;
-                frag.screen_pos.y = y;
-                
-                float alpha = e2 * inv_area;
-                float beta  = e3 * inv_area;
-                float gamma = 1.0f - alpha - beta; // Because alpha + beta + gamma = 1 
-
-                // Translate z to ndc coordinates
-                
-                float z_ndc = v1.pos.z * alpha + v2.pos.z * beta + v3.pos.z * gamma;
-
-                float depth = (z_ndc + 1.0f) * 0.5f;
-                depth = std::max(0.0f, std::min(1.0f, depth));
-                
-                int index = y * w + x;
-
-                // checking the buffer to make sure that only objects in front are displayed 
-                
-                if(depth < zbuffer[index]) {
-                    zbuffer[index] = depth;
-
-                    // Interpolation
-                    
-                    frag.frag_pos     
-                        = interpolate(alpha, beta, gamma, v1.frag_pos, v2.frag_pos, v3.frag_pos);
-                    frag.vertex_color 
-                        = interpolate(alpha, beta, gamma, v1.color,    v2.color,    v3.color);
-                    frag.normal       
-                        = interpolate(alpha, beta, gamma, v1.normal,   v2.normal,   v3.normal);
-
-                    fragments.push_back(frag);
-                }
+            if(x != box.min_x) {
+                e1 += e1_dx; 
+                e2 += e2_dx; 
+                e3 += e3_dx; 
             }
+            
+            if(e1 > 0.0f || e2 > 0.0f || e3 > 0.0f) continue;
+            
+            float alpha = e2 * inv_area;
+            float beta  = e3 * inv_area;
+            float gamma = 1.0f - alpha - beta;
+
+            // Translate z to ndc coordinates
+            float z_ndc = interpolate(alpha, beta, gamma, v1.pos.z, v2.pos.z, v3.pos.z);
+            
+            float depth = (z_ndc + 1.0f) * 0.5f;
+            depth = std::max(0.0f, std::min(1.0f, depth));
+            
+            int index = y * w + x;
+
+            Fragment frag;
+
+            frag.index = index;
+
+            // checking the buffer to make sure that only objects in front are displayed 
+            if(depth >= zbuffer[index]) continue; 
+            
+            zbuffer[index] = depth;
+
+            // Interpolation
+            frag.frag_pos     = interpolate(alpha, beta, gamma, v1.frag_pos, v2.frag_pos, v3.frag_pos);
+            frag.vertex_color = interpolate(alpha, beta, gamma, v1.color,    v2.color,    v3.color);
+            frag.normal       = interpolate(alpha, beta, gamma, v1.normal,   v2.normal,   v3.normal);
+
+            fragments.push_back(frag);
+            
         }
     }
+    fragments.shrink_to_fit();
     return fragments;
 }
 

@@ -31,7 +31,11 @@ void Terminal::present(ScreenBuffer& screen_buffer) {
     std::vector<ChangedSymbol> changes = screen_buffer.getChangesOnly();
 
     for(auto& change : changes) {
-        if (cursor_x == change.x && cursor_y == change.y) {
+        
+        int x = change.index % width;
+        int y = change.index / width;
+
+        if (cursor_x == x && cursor_y == y) {
             std::cout << change.c; 
             if (++cursor_x == width) {
                 cursor_x = 0; ++cursor_y; 
@@ -39,9 +43,9 @@ void Terminal::present(ScreenBuffer& screen_buffer) {
             return; 
         }
 
-        std::cout << "\033[" << (change.y + 1) << ';' << (change.x + 1) << 'H' << change.c;
+        std::cout << "\033[" << (y + 1) << ';' << (x + 1) << 'H' << change.c;
         
-        if (cursor_x == width) {
+        if (++cursor_x == width) {
             cursor_x = 0; ++cursor_y;
         }
     }

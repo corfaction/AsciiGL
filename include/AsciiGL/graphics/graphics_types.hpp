@@ -20,7 +20,7 @@ struct Vertex {
 // Fragment data structure containing interpolated attributes
 
 struct Fragment {
-    ivec2 screen_pos;   // a specific position in the buffer
+    int index;          // a specific position in the buffer
     vec3 frag_pos;
 
     vec4 vertex_color;  // interpolated color
